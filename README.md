@@ -4,7 +4,7 @@ A simple voxel editor made in C++ with SFML and OpenGL.
 
 ## Getting started
 
-Download the latest build from the (Releases)[https://github.com/hansielneff/lexov/releases] section or follow the instructions below to compile from source.
+Download the latest build from the [Releases](https://github.com/hansielneff/lexov/releases) section or follow the instructions below to compile from source.
 
 ## Compiling from source
 
