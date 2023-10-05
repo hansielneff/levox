@@ -4,7 +4,6 @@
 #include <imgui.h>
 
 #include <iostream>
-#include <thread>
 
 static void printContextSettings(sf::Window &window)
 {
@@ -34,43 +33,36 @@ static void handleWindowEvents(sf::Window &window, bool &isAppRunning)
     }
 }
 
-static void renderingLoop(sf::RenderWindow *window, const bool *isAppRunning)
+static void render(sf::RenderWindow &window, sf::Time &delta)
 {
-    ImGui::SFML::Init(*window);
-    window->setActive();
-    sf::Clock deltaClock;
-    while (*isAppRunning)
-    {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        window->pushGLStates();
-        ImGui::SFML::Update(*window, deltaClock.restart());
-        ImGui::ShowDemoWindow();
-        ImGui::SFML::Render(*window);
-        window->popGLStates();
+    window.pushGLStates();
+    ImGui::SFML::Update(window, delta);
+    ImGui::ShowDemoWindow();
+    ImGui::SFML::Render(window);
+    window.popGLStates();
 
-        window->display();
-    }
-    window->setActive(false);
-    ImGui::SFML::Shutdown();
+    window.display();
 }
 
 int main()
 {
     sf::RenderWindow window({1280, 720}, "Levox",
         sf::Style::Default, sf::ContextSettings(24, 8, 4, 3, 3));
+    ImGui::SFML::Init(window);
+    window.setActive();
     printContextSettings(window);
 
+    sf::Clock deltaClock;
     bool isAppRunning = true;
-
-    window.setActive(false);
-    std::thread renderThread(renderingLoop, &window, &isAppRunning);
-
     while (isAppRunning)
     {
         handleWindowEvents(window, isAppRunning);
+        render(window, deltaClock.restart());
     }
 
-    renderThread.join();
+    window.setActive(false);
+    ImGui::SFML::Shutdown();
     return 0;
 }
