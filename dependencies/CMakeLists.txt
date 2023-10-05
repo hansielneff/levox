@@ -1,4 +1,5 @@
 include(FetchContent)
+set(BUILD_SHARED_LIBS OFF)
 
 message(STATUS "Fetching SFML...")
 FetchContent_Declare(
