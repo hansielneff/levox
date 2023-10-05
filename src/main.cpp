@@ -57,7 +57,8 @@ static void renderingLoop(sf::RenderWindow *window, const bool *isAppRunning)
 
 int main()
 {
-    sf::RenderWindow window({1280, 720}, "Levox", sf::Style::Default, sf::ContextSettings(24, 8, 4));
+    sf::RenderWindow window({1280, 720}, "Levox",
+        sf::Style::Default, sf::ContextSettings(24, 8, 4, 3, 3));
     printContextSettings(window);
 
     bool isAppRunning = true;
