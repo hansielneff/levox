@@ -15,8 +15,10 @@ FetchContent_Declare(SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
+find_package(OpenGL REQUIRED) # COMPONENTS GLX EGL)
+
 add_executable(Levox src/main.cpp)
-target_link_libraries(Levox PRIVATE sfml-graphics)
+target_link_libraries(Levox PRIVATE sfml-graphics OpenGL::GL)
 target_compile_features(Levox PRIVATE cxx_std_17)
 
 if(WIN32)
