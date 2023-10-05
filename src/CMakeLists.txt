@@ -14,15 +14,25 @@ target_sources(Levox
         main.cpp
 )
 
-target_link_libraries(Levox PRIVATE sfml-graphics OpenGL::GL)
+target_link_libraries(Levox PRIVATE ImGui-SFML::ImGui-SFML OpenGL::GL)
 target_compile_features(Levox PRIVATE cxx_std_17)
 
+# Copy DLLs needed for runtime on Windows
 if(WIN32)
     add_custom_command(
         TARGET Levox
         COMMENT "Copy OpenAL DLL"
         PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll $<TARGET_FILE_DIR:Levox>
         VERBATIM)
+    add_custom_command(
+        TARGET Levox
+        COMMENT "Copy SFML and ImGui DLLs"
+        POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:ImGui-SFML::ImGui-SFML>
+            $<TARGET_FILE:sfml-graphics>
+            $<TARGET_FILE:sfml-window>
+            $<TARGET_FILE:sfml-system>
+            $<TARGET_FILE_DIR:Levox>)
 endif()
 
 install(TARGETS Levox)
