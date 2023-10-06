@@ -33,7 +33,7 @@ static void handleWindowEvents(sf::Window &window, bool &isAppRunning)
     }
 }
 
-static void render_imgui(sf::RenderWindow &window, sf::Time &delta)
+static void render_imgui(sf::RenderWindow &window, sf::Time delta)
 {
     window.pushGLStates();
     ImGui::SFML::Update(window, delta);
