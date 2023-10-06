@@ -24,13 +24,13 @@ static void handleWindowEvents(sf::Window &window, bool &isAppRunning)
         switch (event.type)
         {
             case sf::Event::Closed:
-            {
                 isAppRunning = false;
-            } break;
+                break;
             case sf::Event::Resized:
-            {
                 glViewport(0, 0, event.size.width, event.size.height);
-            } break;
+                break;
+            default:
+                break;
         }
     }
 }
