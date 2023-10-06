@@ -12,14 +12,19 @@ endif(CCACHE_FOUND)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-find_package(OpenGL REQUIRED)
-
 add_executable(Levox)
 target_sources(Levox
   PRIVATE
     glad/gl.c
+    glad/egl.c
     main.cpp
 )
+
+find_package(OpenGL REQUIRED)
+find_package(X11)
+if(X11_FOUND)
+  target_sources(Levox PRIVATE glad/glx.c)
+endif()
 
 target_include_directories(Levox PRIVATE glad/)
 target_link_libraries(Levox PRIVATE ImGui-SFML::ImGui-SFML OpenGL::GL)
