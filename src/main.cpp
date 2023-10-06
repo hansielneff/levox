@@ -33,17 +33,18 @@ static void handleWindowEvents(sf::Window &window, bool &isAppRunning)
     }
 }
 
-static void render(sf::RenderWindow &window, sf::Time &delta)
+static void render_imgui(sf::RenderWindow &window, sf::Time &delta)
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     window.pushGLStates();
     ImGui::SFML::Update(window, delta);
     ImGui::ShowDemoWindow();
     ImGui::SFML::Render(window);
     window.popGLStates();
+}
 
-    window.display();
+static void render_scene(sf::RenderWindow &window)
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 int main()
@@ -59,7 +60,9 @@ int main()
     while (isAppRunning)
     {
         handleWindowEvents(window, isAppRunning);
-        render(window, deltaClock.restart());
+        render_scene(window);
+        render_imgui(window, deltaClock.restart());
+        window.display();
     }
 
     window.setActive(false);
