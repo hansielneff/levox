@@ -49,9 +49,9 @@ static void renderImGui(sf::RenderWindow &window, sf::Time delta)
     window.popGLStates();
 }
 
-static u32 compileShader(GLenum type, const char *source)
+static u32 compileShaderSource(GLenum shaderType, const char *source)
 {
-    u32 shader = glCreateShader(type);
+    u32 shader = glCreateShader(shaderType);
     glShaderSource(shader, 1, &source, NULL);
     glCompileShader(shader);
 
@@ -70,8 +70,8 @@ static u32 compileShader(GLenum type, const char *source)
 
 static u32 linkShaderProgram()
 {
-    u32 vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
-    u32 fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
+    u32 vertexShader = compileShaderSource(GL_VERTEX_SHADER, vertexShaderSource);
+    u32 fragmentShader = compileShaderSource(GL_FRAGMENT_SHADER, fragmentShaderSource);
     u32 shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
@@ -93,17 +93,28 @@ static u32 linkShaderProgram()
     return shaderProgram;
 }
 
-static u32 initTriangleVAO()
+static u32 initQuadVAO()
 {
     f32 vertices[] = {
-        -0.5f, -0.5f, 0.0f,
+        0.5f,  0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
-        0.0f,  0.5f, 0.0f
+        -0.5f, -0.5f, 0.0f,
+        -0.5f,  0.5f, 0.0f
     };
+
+    u32 indices[] = {
+        0, 1, 3,
+        1, 2, 3
+    };  
 
     u32 VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
+
+    u32 EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     u32 VBO;
     glGenBuffers(1, &VBO);
@@ -114,25 +125,22 @@ static u32 initTriangleVAO()
     glEnableVertexAttribArray(0);
 
     glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     return VAO;
 }
 
-static void renderTriangle(u32 shaderProgram, u32 VAO)
-{
-    glUseProgram(shaderProgram);
-    glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-    glBindVertexArray(0);
-}
-
 static void renderScene(sf::RenderWindow &window)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     u32 shaderProgram = linkShaderProgram();
-    u32 triangleVAO = initTriangleVAO();
-    renderTriangle(shaderProgram, triangleVAO);
+    u32 VAO = initQuadVAO();
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 }
 
 i32 main()
