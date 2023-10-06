@@ -5,6 +5,10 @@
 #include <iostream>
 
 #include "glad/gl.h"
+#include "glad/egl.h"
+#ifdef X11_FOUND
+    #include "glad/glx.h"
+#endif
 #include "types.h"
 
 static void printContextSettings(sf::Window &window)
