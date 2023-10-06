@@ -52,7 +52,7 @@ static void renderImGui(sf::RenderWindow &window, sf::Time delta)
 static u32 compileShader(GLenum type, const char *source)
 {
     u32 shader = glCreateShader(type);
-    glShaderSource(shader, 1, &source, nullptr);
+    glShaderSource(shader, 1, &source, NULL);
     glCompileShader(shader);
 
     int success;
@@ -61,7 +61,7 @@ static u32 compileShader(GLenum type, const char *source)
     {
         u32 const logSize = 512;
         char infoLog[logSize];
-        glGetShaderInfoLog(shader, logSize, nullptr, infoLog);
+        glGetShaderInfoLog(shader, logSize, NULL, infoLog);
         std::cout << "Error: Failed to compile shader\n" << infoLog << std::endl;
     }
 
@@ -83,7 +83,7 @@ static u32 linkShaderProgram()
     {
         u32 const logSize = 512;
         char infoLog[logSize];
-        glGetProgramInfoLog(shaderProgram, logSize, nullptr, infoLog);
+        glGetProgramInfoLog(shaderProgram, logSize, NULL, infoLog);
         std::cout << "Error: Failed to link shader program\n" << infoLog << std::endl;
     }
 
@@ -110,7 +110,7 @@ static u32 initTriangleVAO()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(f32), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(f32), NULL);
     glEnableVertexAttribArray(0);
 
     glBindVertexArray(0);
