@@ -10,6 +10,7 @@
     #include "glad/glx.h"
 #endif
 #include "types.h"
+#include "shader_source.h"
 
 static void printContextSettings(sf::Window &window)
 {
@@ -39,7 +40,7 @@ static void handleWindowEvents(sf::Window &window, bool &isAppRunning)
     }
 }
 
-static void render_imgui(sf::RenderWindow &window, sf::Time delta)
+static void renderImGui(sf::RenderWindow &window, sf::Time delta)
 {
     window.pushGLStates();
     ImGui::SFML::Update(window, delta);
@@ -48,7 +49,51 @@ static void render_imgui(sf::RenderWindow &window, sf::Time delta)
     window.popGLStates();
 }
 
-static void render_scene(sf::RenderWindow &window)
+static u32 compileShader(GLenum type, const char *source)
+{
+    u32 shader = glCreateShader(type);
+    glShaderSource(shader, 1, &source, nullptr);
+    glCompileShader(shader);
+
+    int success;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        u32 const logSize = 512;
+        char infoLog[logSize];
+        glGetShaderInfoLog(shader, logSize, nullptr, infoLog);
+        std::cout << "Error: Failed to compile shader\n" << infoLog << std::endl;
+    }
+
+    return shader;
+}
+
+static u32 linkShaderProgram()
+{
+    u32 vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
+    u32 fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
+    u32 shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    int success;
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success)
+    {
+        u32 const logSize = 512;
+        char infoLog[logSize];
+        glGetProgramInfoLog(shaderProgram, logSize, nullptr, infoLog);
+        std::cout << "Error: Failed to link shader program\n" << infoLog << std::endl;
+    }
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    return shaderProgram;
+}
+
+static u32 initTriangleVAO()
 {
     f32 vertices[] = {
         -0.5f, -0.5f, 0.0f,
@@ -56,10 +101,38 @@ static void render_scene(sf::RenderWindow &window)
         0.0f,  0.5f, 0.0f
     };
 
+    u32 VAO;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
     u32 VBO;
     glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(f32), nullptr);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    return VAO;
+}
+
+static void renderTriangle(u32 shaderProgram, u32 VAO)
+{
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glBindVertexArray(0);
+}
+
+static void renderScene(sf::RenderWindow &window)
+{
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    u32 shaderProgram = linkShaderProgram();
+    u32 triangleVAO = initTriangleVAO();
+    renderTriangle(shaderProgram, triangleVAO);
 }
 
 i32 main()
@@ -86,8 +159,8 @@ i32 main()
     while (isAppRunning)
     {
         handleWindowEvents(window, isAppRunning);
-        render_scene(window);
-        render_imgui(window, deltaClock.restart());
+        renderScene(window);
+        renderImGui(window, deltaClock.restart());
         window.display();
     }
 
