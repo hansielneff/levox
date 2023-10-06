@@ -16,10 +16,12 @@ find_package(OpenGL REQUIRED)
 
 add_executable(Levox)
 target_sources(Levox
-    PRIVATE
-        main.cpp
+  PRIVATE
+    glad/gl.c
+    main.cpp
 )
 
+target_include_directories(Levox PRIVATE glad/)
 target_link_libraries(Levox PRIVATE ImGui-SFML::ImGui-SFML OpenGL::GL)
 target_compile_features(Levox PRIVATE cxx_std_17)
 

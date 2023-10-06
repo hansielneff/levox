@@ -1,10 +1,10 @@
 #include <SFML/Graphics.hpp>
-#include <SFML/OpenGL.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
 
 #include <iostream>
 
+#include "glad/gl.h"
 #include "types.h"
 
 static void printContextSettings(sf::Window &window)
@@ -46,6 +46,15 @@ static void render_imgui(sf::RenderWindow &window, sf::Time delta)
 
 static void render_scene(sf::RenderWindow &window)
 {
+    f32 vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f,  0.5f, 0.0f
+    };
+
+    u32 VBO;
+    glGenBuffers(1, &VBO);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -55,6 +64,12 @@ i32 main()
         sf::Style::Default, sf::ContextSettings(24, 8, 4, 3, 3));
     window.setActive();
     printContextSettings(window);
+
+    if (!gladLoaderLoadGL())
+    {
+        std::cerr << "Failed to load OpenGL extension libraries" << std::endl;
+        return 1;
+    }
 
     if (!ImGui::SFML::Init(window))
     {
