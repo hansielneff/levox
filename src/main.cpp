@@ -51,9 +51,14 @@ int main()
 {
     sf::RenderWindow window({1280, 720}, "Levox",
         sf::Style::Default, sf::ContextSettings(24, 8, 4, 3, 3));
-    ImGui::SFML::Init(window);
     window.setActive();
     printContextSettings(window);
+
+    if (!ImGui::SFML::Init(window))
+    {
+        std::cerr << "Failed to initialize ImGui" << std::endl;
+        return 1;
+    }
 
     sf::Clock deltaClock;
     bool isAppRunning = true;
