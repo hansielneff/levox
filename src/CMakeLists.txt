@@ -23,13 +23,14 @@ target_sources(Levox
 find_package(OpenGL REQUIRED)
 find_package(X11)
 if(X11_FOUND)
+  # Only use GLX on platforms that support/need it
   target_sources(Levox PRIVATE glad/glx.c)
   include_directories(Levox PRIVATE ${X11_INCLUDE_DIR})
   target_link_libraries(Levox PRIVATE ${X11_LIBRARIES})
 endif()
 
 target_include_directories(Levox PRIVATE glad/)
-target_link_libraries(Levox PRIVATE ImGui-SFML::ImGui-SFML OpenGL::GL)
+target_link_libraries(Levox PRIVATE ImGui-SFML::ImGui-SFML OpenGL::GL glm)
 target_compile_features(Levox PRIVATE cxx_std_17)
 
 install(TARGETS Levox)
