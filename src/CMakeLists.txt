@@ -18,6 +18,8 @@ target_sources(Levox
     glad/gl.c
     glad/egl.c
     main.cpp
+    camera.h
+    camera.cpp
 )
 
 find_package(OpenGL REQUIRED)

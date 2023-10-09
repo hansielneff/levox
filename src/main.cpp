@@ -1,15 +1,20 @@
 #include <SFML/Graphics.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
-
-#include <iostream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "glad/gl.h"
 #include "glad/egl.h"
 #ifdef X11_FOUND
     #include "glad/glx.h"
 #endif
+
+#include <iostream>
+
 #include "types.h"
+#include "camera.h"
 #include "shader_source.h"
 
 static void printContextSettings(sf::Window &window)
@@ -137,13 +142,30 @@ static u32 initQuadVAO()
     return VAO;
 }
 
-static void renderScene(sf::RenderWindow &window)
+static void renderScene(sf::RenderWindow &window, Camera &camera)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     u32 shaderProgram = linkShaderProgram();
     u32 VAO = initQuadVAO();
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+    glm::mat4 view = camera.getViewMatrix();
+    glm::mat4 projection = camera.getProjectionMatrix(ProjectionMode::Perspective);
+
     glUseProgram(shaderProgram);
+
+    u32 modelLoc = glGetUniformLocation(shaderProgram, "model");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+    u32 viewLoc = glGetUniformLocation(shaderProgram, "view");
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+    u32 projectionLoc = glGetUniformLocation(shaderProgram, "projection");
+    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
@@ -168,14 +190,32 @@ i32 main()
         return 1;
     }
 
+    glEnable(GL_DEPTH_TEST);
+
+    Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
     sf::Clock deltaClock;
+    sf::Time deltaTime = sf::Time::Zero;
     bool isAppRunning = true;
     while (isAppRunning)
     {
+        // This is a temporary input handling system for testing
+        // the Camera class.
+        bool right = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+        bool left = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+        bool up = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
+        bool down = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
+        f32 xOffset = (right - left) * deltaTime.asSeconds();
+        f32 yOffset = (up - down) * deltaTime.asSeconds();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+            camera.pan(xOffset, yOffset);
+        else
+            camera.orbit(xOffset * 10, yOffset * 10);
+
         handleWindowEvents(window, isAppRunning);
-        renderScene(window);
-        renderImGui(window, deltaClock.restart());
+        renderScene(window, camera);
+        renderImGui(window, deltaTime);
         window.display();
+        deltaTime = deltaClock.restart();
     }
 
     window.setActive(false);
