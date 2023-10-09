@@ -24,6 +24,9 @@ void Camera::pan(f32 offsetX, f32 offsetY)
 
 void Camera::orbit(f32 degreesX, f32 degreesY)
 {
+    // This function implements "Arcball rotation" as explained by Samaursa here:
+    // https://gamedev.stackexchange.com/questions/20758/how-can-i-orbit-a-camera-about-its-target-point
+
     // TODO: Surely there's a better way to rotate a vec3..
     f32 yaw = glm::radians(degreesX) * sensitivity;
     f32 pitch = glm::radians(degreesY) * sensitivity;
