@@ -22,6 +22,8 @@ void Camera::pan(f32 offsetX, f32 offsetY)
     target += displacement;
 }
 
+#include <iostream>
+
 void Camera::orbit(f32 degreesX, f32 degreesY)
 {
     // This function implements "Arcball rotation" as explained by Samaursa here:
@@ -34,12 +36,16 @@ void Camera::orbit(f32 degreesX, f32 degreesY)
     rotation = glm::rotate(rotation, yaw, up);
     rotation = glm::rotate(rotation, pitch, right);
     glm::vec4 intermediate = rotation * glm::vec4(targetToCamera, 1.0f);
-    targetToCamera.x = intermediate.x / intermediate.w;
-    targetToCamera.y = intermediate.y / intermediate.w;
-    targetToCamera.z = intermediate.z / intermediate.w;
-    targetToCamera += target;
-    position = targetToCamera;
-    calculateLocalVectors();
+    f32 normalizedPitch = intermediate.y / glm::length(targetToCamera);
+    if (normalizedPitch < 0.99f && normalizedPitch > -0.99f)
+    {
+        targetToCamera.x = intermediate.x;
+        targetToCamera.y = intermediate.y;
+        targetToCamera.z = intermediate.z;
+        targetToCamera += target;
+        position = targetToCamera;
+        calculateLocalVectors();
+    }
 }
 
 glm::mat4 Camera::getViewMatrix() const
