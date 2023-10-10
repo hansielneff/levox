@@ -26,19 +26,59 @@ static void printContextSettings(sf::Window &window)
     std::cout << "version:" << settings.majorVersion << "." << settings.minorVersion << std::endl;
 }
 
-static void handleWindowEvents(sf::Window &window, bool &isAppRunning)
+static void handleWindowEvents(sf::Window &window, Camera &camera, bool &isAppRunning)
 {
+    static bool middleMouseDown = false;
+    static bool leftShiftDown = false;
+
     for (auto event = sf::Event(); window.pollEvent(event);)
     {
         ImGui::SFML::ProcessEvent(event);
         switch (event.type)
         {
             case sf::Event::Closed:
+            {
                 isAppRunning = false;
-                break;
+            } break;
             case sf::Event::Resized:
+            {
                 glViewport(0, 0, event.size.width, event.size.height);
-                break;
+            } break;
+            case sf::Event::KeyPressed:
+            {
+                if (event.key.code == sf::Keyboard::LShift)
+                    leftShiftDown = true;
+                else if (event.key.code == sf::Keyboard::P)
+                    camera.perspective = !camera.perspective;
+            } break;
+            case sf::Event::KeyReleased:
+            {
+                if (event.key.code == sf::Keyboard::LShift)
+                    leftShiftDown = false;
+            } break;
+            case sf::Event::MouseButtonPressed:
+            {
+                if (event.mouseButton.button == sf::Mouse::Middle)
+                    middleMouseDown = true;
+            } break;
+            case sf::Event::MouseButtonReleased:
+            {
+                if (event.mouseButton.button == sf::Mouse::Middle)
+                    middleMouseDown = false;
+            } break;
+            case sf::Event::MouseMoved:
+            {
+                sf::Vector2i currMousePos = {event.mouseMove.x, event.mouseMove.y};
+                static sf::Vector2i prevMousePos = currMousePos;
+                sf::Vector2i mouseDelta = currMousePos - prevMousePos;
+                prevMousePos = currMousePos;
+                if (middleMouseDown)
+                {
+                    leftShiftDown ?
+                        camera.pan(mouseDelta.x, mouseDelta.y) :
+                        camera.orbit(mouseDelta.x, mouseDelta.y);
+                }
+            } break;
             default:
                 break;
         }
@@ -153,7 +193,7 @@ static void renderScene(sf::RenderWindow &window, Camera &camera)
     model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
     glm::mat4 view = camera.getViewMatrix();
-    glm::mat4 projection = camera.getProjectionMatrix(ProjectionMode::Perspective);
+    glm::mat4 projection = camera.getProjectionMatrix();
 
     glUseProgram(shaderProgram);
 
@@ -184,13 +224,13 @@ i32 main()
         return 1;
     }
 
+    glEnable(GL_DEPTH_TEST);
+
     if (!ImGui::SFML::Init(window))
     {
         std::cerr << "Failed to initialize ImGui" << std::endl;
         return 1;
     }
-
-    glEnable(GL_DEPTH_TEST);
 
     Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
     sf::Clock deltaClock;
@@ -198,20 +238,7 @@ i32 main()
     bool isAppRunning = true;
     while (isAppRunning)
     {
-        // This is a temporary input handling system for testing
-        // the Camera class.
-        bool right = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
-        bool left = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
-        bool up = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
-        bool down = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
-        f32 xOffset = (right - left) * deltaTime.asSeconds();
-        f32 yOffset = (up - down) * deltaTime.asSeconds();
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-            camera.pan(xOffset, yOffset);
-        else
-            camera.orbit(xOffset * 10, yOffset * 10);
-
-        handleWindowEvents(window, isAppRunning);
+        handleWindowEvents(window, camera, isAppRunning);
         renderScene(window, camera);
         renderImGui(window, deltaTime);
         window.display();

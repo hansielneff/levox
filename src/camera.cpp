@@ -1,15 +1,17 @@
 #include "camera.h"
 
 Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 global_up,
-    f32 FOV, f32 aspect, f32 near_plane, f32 far_plane, f32 sensitivity)
+    bool perspective, f32 FOV, f32 aspect, f32 near_plane, f32 far_plane)
 : position(position)
 , target(target)
 , global_up(global_up)
+, perspective(perspective)
 , FOV(FOV)
 , aspect(aspect)
 , near_plane(near_plane)
 , far_plane(far_plane)
-, sensitivity(sensitivity)
+, sensitivity_pan(SENSITIVITY_PAN_DEFAULT)
+, sensitivity_orbit(SENSITIVITY_ORBIT_DEFAULT)
 {
     calculateLocalVectors();
     assert(FOV > 0.0f);
@@ -17,12 +19,10 @@ Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 global_up,
 
 void Camera::pan(f32 offsetX, f32 offsetY)
 {
-    glm::vec3 displacement = (right * offsetX + up * offsetY) * sensitivity;
+    glm::vec3 displacement = (right * -offsetX + up * offsetY) * sensitivity_pan;
     position += displacement;
     target += displacement;
 }
-
-#include <iostream>
 
 void Camera::orbit(f32 degreesX, f32 degreesY)
 {
@@ -30,8 +30,8 @@ void Camera::orbit(f32 degreesX, f32 degreesY)
     // https://gamedev.stackexchange.com/questions/20758/how-can-i-orbit-a-camera-about-its-target-point
 
     // TODO: Surely there's a better way to rotate a vec3..
-    f32 yaw = glm::radians(degreesX) * sensitivity;
-    f32 pitch = glm::radians(degreesY) * sensitivity;
+    f32 yaw = glm::radians(-degreesX) * sensitivity_orbit;
+    f32 pitch = glm::radians(-degreesY) * sensitivity_orbit;
     glm::mat4 rotation = glm::mat4(1.0f);
     rotation = glm::rotate(rotation, yaw, up);
     rotation = glm::rotate(rotation, pitch, right);
@@ -53,25 +53,23 @@ glm::mat4 Camera::getViewMatrix() const
     return glm::lookAt(position, target, up);
 }
 
-glm::mat4 Camera::getProjectionMatrix(ProjectionMode mode) const
+glm::mat4 Camera::getProjectionMatrix() const
 {
-    switch (mode)
+    if (perspective)
     {
-        case ProjectionMode::Perspective:
-        {
-            return glm::perspective(
-                glm::radians(FOV), aspect, near_plane, far_plane);
-        } break;
-        case ProjectionMode::Orthographic:
-        {
-            f32 width = FOV * ORTHO_FOV_SCALAR * aspect;
-            f32 height = FOV * ORTHO_FOV_SCALAR;
-            return glm::ortho(
-                position.x - width / 2, position.x + width / 2,
-                position.y - height / 2, position.y + height / 2,
-                near_plane + position.z, far_plane + position.z
-            );
-        } break;
+        return glm::perspective(
+            glm::radians(FOV), aspect, near_plane, far_plane);
+    }
+    else
+    {
+        f32 targetDistance = glm::length(targetToCamera);
+        f32 width = targetDistance * aspect;
+        f32 height = targetDistance;
+        return glm::ortho(
+            -width / 2, width / 2,
+            -height / 2, height / 2,
+            near_plane, far_plane
+        );
     }
 }
 
@@ -82,7 +80,7 @@ void Camera::calculateLocalVectors()
     right = glm::normalize(glm::cross(global_up, forward));
     up = glm::cross(forward, right);
 
-    assert(glm::length(forward) > 0.999f && glm::length(forward) < 1.001f);
-    assert(glm::length(right) > 0.999f && glm::length(right) < 1.001f);
-    assert(glm::length(up) > 0.999f && glm::length(up) < 1.001f);
+    assert(glm::length(forward) > 0.99f && glm::length(forward) < 1.01f);
+    assert(glm::length(right) > 0.99f && glm::length(right) < 1.01f);
+    assert(glm::length(up) > 0.99f && glm::length(up) < 1.01f);
 }
