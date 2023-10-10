@@ -225,7 +225,7 @@ i32 main()
 
     if (!gladLoaderLoadGL())
     {
-        std::cerr << "Failed to load OpenGL extension libraries" << std::endl;
+        std::cerr << "Error: Failed to load OpenGL extension libraries" << std::endl;
         return 1;
     }
 
@@ -233,7 +233,7 @@ i32 main()
 
     if (!ImGui::SFML::Init(window))
     {
-        std::cerr << "Failed to initialize ImGui" << std::endl;
+        std::cerr << "Error: Failed to initialize ImGui" << std::endl;
         return 1;
     }
 
