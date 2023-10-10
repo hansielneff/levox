@@ -56,6 +56,11 @@ static void handleWindowEvents(sf::Window &window, Camera &camera, bool &isAppRu
                 if (event.key.code == sf::Keyboard::LShift)
                     leftShiftDown = false;
             } break;
+            case sf::Event::MouseWheelScrolled:
+            {
+                if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+                    camera.zoom(event.mouseWheelScroll.delta);
+            } break;
             case sf::Event::MouseButtonPressed:
             {
                 if (event.mouseButton.button == sf::Mouse::Middle)

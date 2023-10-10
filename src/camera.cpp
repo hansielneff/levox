@@ -10,8 +10,9 @@ Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 global_up,
 , aspect(aspect)
 , near_plane(near_plane)
 , far_plane(far_plane)
-, sensitivity_pan(SENSITIVITY_PAN_DEFAULT)
-, sensitivity_orbit(SENSITIVITY_ORBIT_DEFAULT)
+, sensitivity_pan(DEFAULT_SENSITIVITY_PAN)
+, sensitivity_orbit(DEFAULT_SENSITIVITY_ORBIT)
+, sensitivity_zoom(DEFAULT_SENSITIVITY_ZOOM)
 {
     calculateLocalVectors();
     assert(FOV > 0.0f);
@@ -48,6 +49,12 @@ void Camera::orbit(f32 degreesX, f32 degreesY)
     }
 }
 
+void Camera::zoom(f32 amount)
+{
+    if (FOV - amount > 0.0f)
+        FOV -= amount;
+}
+
 glm::mat4 Camera::getViewMatrix() const
 {
     return glm::lookAt(position, target, up);
@@ -76,7 +83,7 @@ glm::mat4 Camera::getProjectionMatrix() const
 void Camera::calculateLocalVectors()
 {
     targetToCamera = position - target;
-    glm::vec3 forward = glm::normalize(targetToCamera);
+    forward = glm::normalize(targetToCamera);
     right = glm::normalize(glm::cross(global_up, forward));
     up = glm::cross(forward, right);
 
