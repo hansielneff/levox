@@ -51,8 +51,8 @@ void Camera::orbit(f32 degreesX, f32 degreesY)
 
 void Camera::zoom(f32 amount)
 {
-    if (FOV - amount > 0.0f)
-        FOV -= amount;
+    f32 newFOV = FOV - amount * sensitivity_zoom;
+    if (newFOV > 0.0f) FOV = newFOV;
 }
 
 glm::mat4 Camera::getViewMatrix() const
