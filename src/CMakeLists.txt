@@ -19,6 +19,7 @@ target_sources(Levox
     glad/egl.c
     main.cpp
     camera.cpp
+    shader.cpp
 )
 
 find_package(OpenGL REQUIRED)

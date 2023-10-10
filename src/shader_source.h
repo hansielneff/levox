@@ -1,6 +1,7 @@
 const char *vertexShaderSource =
 R"(
 #version 330 core
+
 layout (location = 0) in vec3 aPos;
 
 uniform mat4 model;
@@ -16,6 +17,7 @@ void main()
 const char *fragmentShaderSource =
 R"(
 #version 330 core
+
 out vec4 FragColor;
 
 void main()

@@ -15,6 +15,7 @@
 
 #include "types.h"
 #include "camera.h"
+#include "shader.h"
 #include "shader_source.h"
 
 static void printContextSettings(sf::Window &window)
@@ -105,50 +106,6 @@ static void renderImGui(sf::RenderWindow &window, sf::Time delta)
     window.popGLStates();
 }
 
-static u32 compileShaderSource(GLenum shaderType, const char *source)
-{
-    u32 shader = glCreateShader(shaderType);
-    glShaderSource(shader, 1, &source, NULL);
-    glCompileShader(shader);
-
-    int success;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        u32 const logSize = 512;
-        char infoLog[logSize];
-        glGetShaderInfoLog(shader, logSize, NULL, infoLog);
-        std::cout << "Error: Failed to compile shader\n" << infoLog << std::endl;
-    }
-
-    return shader;
-}
-
-static u32 linkShaderProgram()
-{
-    u32 vertexShader = compileShaderSource(GL_VERTEX_SHADER, vertexShaderSource);
-    u32 fragmentShader = compileShaderSource(GL_FRAGMENT_SHADER, fragmentShaderSource);
-    u32 shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    int success;
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success)
-    {
-        u32 const logSize = 512;
-        char infoLog[logSize];
-        glGetProgramInfoLog(shaderProgram, logSize, NULL, infoLog);
-        std::cout << "Error: Failed to link shader program\n" << infoLog << std::endl;
-    }
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
-    return shaderProgram;
-}
-
 static u32 initQuadVAO()
 {
     f32 vertices[] = {
@@ -191,7 +148,7 @@ static void renderScene(sf::RenderWindow &window, Camera &camera)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    u32 shaderProgram = linkShaderProgram();
+    Shader shader(vertexShaderSource, fragmentShaderSource);
     u32 VAO = initQuadVAO();
 
     glm::mat4 model = glm::mat4(1.0f);
@@ -200,15 +157,15 @@ static void renderScene(sf::RenderWindow &window, Camera &camera)
     glm::mat4 view = camera.getViewMatrix();
     glm::mat4 projection = camera.getProjectionMatrix();
 
-    glUseProgram(shaderProgram);
+    glUseProgram(shader.ID);
 
-    u32 modelLoc = glGetUniformLocation(shaderProgram, "model");
+    u32 modelLoc = glGetUniformLocation(shader.ID, "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-    u32 viewLoc = glGetUniformLocation(shaderProgram, "view");
+    u32 viewLoc = glGetUniformLocation(shader.ID, "view");
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-    u32 projectionLoc = glGetUniformLocation(shaderProgram, "projection");
+    u32 projectionLoc = glGetUniformLocation(shader.ID, "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
     glBindVertexArray(VAO);
