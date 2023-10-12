@@ -17,6 +17,7 @@
 #include "camera.h"
 #include "shader.h"
 #include "shader_source.h"
+#include "voxel.h"
 
 static void printContextSettings(sf::Window &window)
 {
@@ -106,71 +107,49 @@ static void renderImGui(sf::RenderWindow &window, sf::Time delta)
     window.popGLStates();
 }
 
-static u32 initQuadVAO()
-{
-    f32 vertices[] = {
-        0.5f,  0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f
-    };
-
-    u32 indices[] = {
-        0, 1, 3,
-        1, 2, 3
-    };  
-
-    u32 VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-
-    u32 EBO;
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    u32 VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(f32), NULL);
-    glEnableVertexAttribArray(0);
-
-    glBindVertexArray(0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    return VAO;
-}
-
-static void renderScene(sf::RenderWindow &window, Camera &camera)
+static void renderModel(sf::RenderWindow &window, Camera &camera)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     Shader shader(vertexShaderSource, fragmentShaderSource);
-    u32 VAO = initQuadVAO();
-
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    VoxelMesh voxelMesh;
 
     glm::mat4 view = camera.getViewMatrix();
     glm::mat4 projection = camera.getProjectionMatrix();
 
     glUseProgram(shader.ID);
 
-    u32 modelLoc = glGetUniformLocation(shader.ID, "model");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+    // TODO: This is a *very* naive rendering method as every
+    // voxel is its own separate draw call and obscured faces
+    // are rendered as well. Please fix.
+    for (int x = 0; x < 4; x++) {
+        for (int y = 0; y < 4; y++) {
+            for (int z = 0; z < 4; z++) {
+                VoxelData voxel = testModel[x][y][z];
+                if (voxel.a < 1.0f) continue;
 
-    u32 viewLoc = glGetUniformLocation(shader.ID, "view");
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+                model = glm::translate(model, glm::vec3(x, y, z));
 
-    u32 projectionLoc = glGetUniformLocation(shader.ID, "projection");
-    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+                u32 modelLoc = glGetUniformLocation(shader.ID, "model");
+                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
+                u32 viewLoc = glGetUniformLocation(shader.ID, "view");
+                glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+                u32 projectionLoc = glGetUniformLocation(shader.ID, "projection");
+                glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+                
+                u32 colorLoc = glGetUniformLocation(shader.ID, "color");
+                glUniform4f(colorLoc, voxel.r, voxel.g, voxel.b, voxel.a);
+
+                voxelMesh.bind();
+                glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+                glBindVertexArray(0);
+            }
+        }
+    }
 }
 
 i32 main()
@@ -201,7 +180,7 @@ i32 main()
     while (isAppRunning)
     {
         handleWindowEvents(window, camera, isAppRunning);
-        renderScene(window, camera);
+        renderModel(window, camera);
         renderImGui(window, deltaTime);
         window.display();
         deltaTime = deltaClock.restart();

@@ -20,6 +20,7 @@ target_sources(Levox
     main.cpp
     camera.cpp
     shader.cpp
+    voxel.cpp
 )
 
 find_package(OpenGL REQUIRED)
