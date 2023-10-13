@@ -1,3 +1,6 @@
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "glad/gl.h"
 #include "glad/egl.h"
 #ifdef X11_FOUND
@@ -29,8 +32,25 @@ VoxelMesh::~VoxelMesh()
     glDeleteBuffers(1, &VBO);
 }
 
-void VoxelMesh::render()
+void VoxelMesh::render(sf::RenderWindow &window,
+    const Camera &camera, const Shader &shader) const
 {
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+    glm::mat4 view = camera.getViewMatrix();
+    glm::mat4 projection = camera.getProjectionMatrix();
+
+    glUseProgram(shader.ID);
+
+    u32 modelLoc = glGetUniformLocation(shader.ID, "model");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+    u32 viewLoc = glGetUniformLocation(shader.ID, "view");
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+    u32 projectionLoc = glGetUniformLocation(shader.ID, "projection");
+    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 2304, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

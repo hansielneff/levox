@@ -1,7 +1,11 @@
 #ifndef VOXEL_MESH_H
 #define VOXEL_MESH_H
 
+#include <SFML/Graphics.hpp>
+
 #include "types.hpp"
+#include "camera.hpp"
+#include "shader.hpp"
 
 #define VOXEL_VERTEX_COUNT 8
 #define VOXEL_INDEX_COUNT 6 * 6
@@ -23,7 +27,8 @@ public:
     VoxelMesh(VoxelData *voxelData, u32 width, u32 height, u32 depth);
     ~VoxelMesh();
 
-    void render();
+    void render(sf::RenderWindow &window,
+        const Camera &camera, const Shader &shader) const;
 
 private:
     u32 VAO;

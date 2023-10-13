@@ -1,6 +1,12 @@
 #ifndef SHADER_H
 #define SHADER_H
 
+#include "glad/gl.h"
+#include "glad/egl.h"
+#ifdef X11_FOUND
+    #include "glad/glx.h"
+#endif
+
 #include "types.hpp"
 
 class Shader

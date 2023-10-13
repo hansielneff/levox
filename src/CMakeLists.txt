@@ -20,8 +20,6 @@ target_sources(Levox
     main.cpp
     levox_imgui.hpp
     levox_imgui.cpp
-    graphics.hpp
-    graphics.cpp
     camera.hpp
     camera.cpp
     shader.hpp
