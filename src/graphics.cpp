@@ -18,7 +18,7 @@
 void initOpenGLContext()
 {
     if (!gladLoaderLoadGL())
-        throw std::exception("Error: Failed to load OpenGL extension libraries");
+        throw std::runtime_error("Error: Failed to load OpenGL extension libraries");
     glEnable(GL_DEPTH_TEST);
 }
 

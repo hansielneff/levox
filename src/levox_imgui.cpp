@@ -5,7 +5,7 @@
 void initImGui(sf::RenderWindow &window)
 {
     if (!ImGui::SFML::Init(window))
-        throw std::exception("Error: Failed to initialize ImGui");
+        throw std::runtime_error("Error: Failed to initialize ImGui");
 }
 
 void renderImGui(sf::RenderWindow &window, sf::Time delta)
