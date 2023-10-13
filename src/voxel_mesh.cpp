@@ -9,20 +9,10 @@
 
 #include "voxel_mesh.hpp"
 
-VoxelMesh::VoxelMesh(VoxelData *voxelData, u32 width, u32 height, u32 depth)
-: voxelData(voxelData)
-, voxelCount(width * height * depth)
-, vertexCount(voxelCount * VOXEL_VERTEX_COUNT)
-, indexCount(voxelCount * VOXEL_INDEX_COUNT)
+VoxelMesh::VoxelMesh(const VoxelData *voxelData, u32 width, u32 height, u32 depth)
 {
-    VoxelVertex *vertices = new VoxelVertex[vertexCount];
-    u32 *indices = new u32[indexCount];
-
-    generateMesh(vertices, indices, width, height);
-    initGLBuffers(vertices, indices);
-
-    delete[] vertices;
-    delete[] indices;
+    initGLBuffers();
+    generateMesh(voxelData, width, height, depth);
 }
 
 VoxelMesh::~VoxelMesh()
@@ -57,8 +47,14 @@ void VoxelMesh::render(sf::RenderWindow &window,
 }
 
 // TODO: Don't waste time rendering obscured faces
-void VoxelMesh::generateMesh(VoxelVertex *vertices, u32 *indices, u32 width, u32 height)
+void VoxelMesh::generateMesh(const VoxelData *voxelData, u32 width, u32 height, u32 depth)
 {
+    u32 voxelCount = width * height * depth;
+    u32 vertexCount = voxelCount * VOXEL_VERTEX_COUNT;
+    u32 indexCount = voxelCount * VOXEL_INDEX_COUNT;
+    VoxelVertex *vertices = new VoxelVertex[vertexCount];
+    u32 *indices = new u32[indexCount];
+
     VoxelVertex *vertex = vertices;
     u32 *index = indices;
     u32 invisibleVoxels = 0;
@@ -112,18 +108,29 @@ void VoxelMesh::generateMesh(VoxelVertex *vertices, u32 *indices, u32 width, u32
             *(index++) = (voxelIndex - invisibleVoxels) *
                 VOXEL_VERTEX_COUNT + index_offsets[i];
     }
+
+    bufferMeshData(vertices, indices, vertexCount, indexCount);
+
+    delete[] vertices;
+    delete[] indices;
 }
 
-void VoxelMesh::initGLBuffers(const VoxelVertex *vertices, const u32 *indices)
+void VoxelMesh::initGLBuffers()
 {
     glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &EBO);
+    glGenBuffers(1, &VBO);
+}
+
+void VoxelMesh::bufferMeshData(
+    const VoxelVertex *vertices, const u32 *indices,
+    u32 vertexCount, u32 indexCount)
+{
     glBindVertexArray(VAO);
 
-    glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * sizeof(*indices), indices, GL_STATIC_DRAW);
 
-    glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(*vertices), vertices, GL_STATIC_DRAW);
 

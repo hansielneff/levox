@@ -24,8 +24,11 @@ struct VoxelVertex
 class VoxelMesh
 {
 public:
-    VoxelMesh(VoxelData *voxelData, u32 width, u32 height, u32 depth);
+    VoxelMesh(const VoxelData *voxelData, u32 width, u32 height, u32 depth);
     ~VoxelMesh();
+
+    void generateMesh(const VoxelData *voxelData,
+        u32 width, u32 height, u32 depth);
 
     void render(sf::RenderWindow &window,
         const Camera &camera, const Shader &shader) const;
@@ -34,13 +37,10 @@ private:
     u32 VAO;
     u32 EBO;
     u32 VBO;
-    VoxelData *voxelData;
-    u32 voxelCount;
-    u32 vertexCount;
-    u32 indexCount;
 
-    void generateMesh(VoxelVertex *vertices, u32 *indices, u32 width, u32 height);
-    void initGLBuffers(const VoxelVertex *vertices, const u32 *indices);
+    void initGLBuffers();
+    void bufferMeshData(const VoxelVertex *vertices, const u32 *indices,
+        u32 vertexCount, u32 indexCount);
 };
 
 #endif

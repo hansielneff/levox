@@ -24,6 +24,7 @@ int main()
         Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
         Shader shader(vertexShaderSource, fragmentShaderSource);
         VoxelMesh voxelMesh((VoxelData*)testModel, 4, 4, 4);
+        voxelMesh.generateMesh((VoxelData*)testModel2, 4, 4, 4);
 
         sf::Clock deltaClock;
         sf::Time deltaTime = sf::Time::Zero;
