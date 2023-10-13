@@ -3,6 +3,9 @@ R"(
 #version 330 core
 
 layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aCol;
+
+out vec3 vertexColor;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -11,6 +14,7 @@ uniform mat4 projection;
 void main()
 {
     gl_Position = projection * view * model * vec4(aPos, 1.0f);
+    vertexColor = aCol;
 }
 )";
 
@@ -18,12 +22,12 @@ const char *fragmentShaderSource =
 R"(
 #version 330 core
 
-out vec4 FragColor;
+in vec3 vertexColor;
 
-uniform vec4 color;
+out vec4 fragColor;
 
 void main()
 {
-    FragColor = color;
+    fragColor = vec4(vertexColor, 1.0f);
 } 
 )";

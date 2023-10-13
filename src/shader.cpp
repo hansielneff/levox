@@ -1,9 +1,15 @@
-#include "shader.h"
+#include "glad/gl.h"
+#include "glad/egl.h"
+#ifdef X11_FOUND
+    #include "glad/glx.h"
+#endif
 
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
+
+#include "shader.h"
 
 Shader::Shader(const char* vertex, const char* fragment, bool from_files)
 {

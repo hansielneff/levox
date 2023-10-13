@@ -18,9 +18,10 @@ target_sources(Levox
     glad/gl.c
     glad/egl.c
     main.cpp
+    levox_imgui.cpp
     camera.cpp
     shader.cpp
-    voxel.cpp
+    voxel_mesh.cpp
 )
 
 find_package(OpenGL REQUIRED)
