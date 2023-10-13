@@ -26,7 +26,6 @@ void VoxelMesh::render(sf::RenderWindow &window,
     const Camera &camera, const Shader &shader) const
 {
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
     glm::mat4 view = camera.getViewMatrix();
     glm::mat4 projection = camera.getProjectionMatrix();
 
