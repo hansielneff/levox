@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "types.h"
+#include "types.hpp"
 
 #define DEFAULT_SENSITIVITY_PAN 0.0025f
 #define DEFAULT_SENSITIVITY_ORBIT 0.2f

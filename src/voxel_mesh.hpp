@@ -1,7 +1,7 @@
 #ifndef VOXEL_MESH_H
 #define VOXEL_MESH_H
 
-#include "types.h"
+#include "types.hpp"
 
 #define VOXEL_VERTEX_COUNT 8
 #define VOXEL_INDEX_COUNT 6 * 6

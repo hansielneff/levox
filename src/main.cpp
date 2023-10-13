@@ -2,10 +2,10 @@
 
 #include <iostream>
 
-#include "event_handler.h"
-#include "levox_imgui.h"
-#include "graphics.h"
-#include "camera.h"
+#include "event_handler.hpp"
+#include "levox_imgui.hpp"
+#include "graphics.hpp"
+#include "camera.hpp"
 
 int main()
 {

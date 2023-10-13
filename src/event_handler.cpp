@@ -4,8 +4,8 @@
     #include "glad/glx.h"
 #endif
 
-#include "event_handler.h"
-#include "levox_imgui.h"
+#include "event_handler.hpp"
+#include "levox_imgui.hpp"
 
 void handleWindowEvents(sf::Window &window, Camera &camera, bool &isAppRunning)
 {

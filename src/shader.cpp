@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "shader.h"
+#include "shader.hpp"
 
 Shader::Shader(const char* vertex, const char* fragment, bool from_files)
 {

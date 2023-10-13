@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "camera.h"
+#include "camera.hpp"
 
 void initOpenGLContext();
 void renderModel(sf::RenderWindow &window, Camera &camera);

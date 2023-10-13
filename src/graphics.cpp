@@ -9,11 +9,11 @@
 
 #include <exception>
 
-#include "graphics.h"
-#include "shader.h"
-#include "shader_source.h"
-#include "voxel_mesh.h"
-#include "test_model.h"
+#include "graphics.hpp"
+#include "shader.hpp"
+#include "shader_source.hpp"
+#include "voxel_mesh.hpp"
+#include "test_model.hpp"
 
 void initOpenGLContext()
 {

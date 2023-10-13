@@ -18,17 +18,17 @@ target_sources(Levox
     glad/gl.c
     glad/egl.c
     main.cpp
-    levox_imgui.h
+    levox_imgui.hpp
     levox_imgui.cpp
-    graphics.h
+    graphics.hpp
     graphics.cpp
-    camera.h
+    camera.hpp
     camera.cpp
-    shader.h
+    shader.hpp
     shader.cpp
-    voxel_mesh.h
+    voxel_mesh.hpp
     voxel_mesh.cpp
-    event_handler.h
+    event_handler.hpp
     event_handler.cpp
 )
 

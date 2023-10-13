@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "levox_imgui.h"
+#include "levox_imgui.hpp"
 
 void initImGui(sf::RenderWindow &window)
 {

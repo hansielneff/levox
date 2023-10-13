@@ -1,4 +1,4 @@
-#include "voxel_mesh.h"
+#include "voxel_mesh.hpp"
 
 static const VoxelData testModel[4][4][4] = {
     {

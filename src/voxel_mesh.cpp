@@ -4,7 +4,7 @@
     #include "glad/glx.h"
 #endif
 
-#include "voxel_mesh.h"
+#include "voxel_mesh.hpp"
 
 VoxelMesh::VoxelMesh(VoxelData *voxelData, u32 width, u32 height, u32 depth)
 : voxelData(voxelData)

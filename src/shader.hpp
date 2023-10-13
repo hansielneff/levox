@@ -1,7 +1,7 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include "types.h"
+#include "types.hpp"
 
 class Shader
 {

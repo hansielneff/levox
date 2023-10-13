@@ -3,7 +3,7 @@
 
 #include <SFML/Window.hpp>
 
-#include "camera.h"
+#include "camera.hpp"
 
 void handleWindowEvents(sf::Window &window, Camera &camera, bool &isAppRunning);
 

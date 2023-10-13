@@ -1,4 +1,4 @@
-#include "camera.h"
+#include "camera.hpp"
 
 Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 global_up,
     bool perspective, f32 FOV, f32 aspect, f32 near_plane, f32 far_plane)
