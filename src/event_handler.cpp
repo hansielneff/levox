@@ -4,6 +4,8 @@
     #include "glad/glx.h"
 #endif
 
+#include <iostream>
+
 #include "event_handler.hpp"
 #include "levox_imgui.hpp"
 
@@ -63,6 +65,11 @@ void handleWindowEvents(sf::Window &window, Camera &camera, bool &isAppRunning)
                     leftShiftDown ?
                         camera.pan(mouseDelta.x, mouseDelta.y) :
                         camera.orbit(mouseDelta.x, mouseDelta.y);
+                }
+                else
+                {
+                    glm::vec3 worldPos = camera.screenToWorld(event.mouseMove.x, event.mouseMove.y);
+                    std::cout << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << std::endl;
                 }
             } break;
             default:

@@ -1,3 +1,9 @@
+#include "glad/gl.h"
+#include "glad/egl.h"
+#ifdef X11_FOUND
+    #include "glad/glx.h"
+#endif
+
 #include "camera.hpp"
 
 Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 global_up,
@@ -53,6 +59,20 @@ void Camera::zoom(f32 amount)
 {
     f32 newFOV = FOV - amount * sensitivity_zoom;
     if (newFOV > 0.0f) FOV = newFOV;
+}
+
+// TODO: This has not been tested properly yet.
+// Might work, who knows ¯\_(ツ)_/¯
+glm::vec3 Camera::screenToWorld(f32 screenX, f32 screenY)
+{
+    f32 screenZ;
+    glReadPixels(screenX, screenY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &screenZ);
+    glm::vec4 screenPos(screenX, screenY, screenZ, 1.0f);
+    glm::mat4 inverseViewMatrix = glm::inverse(getViewMatrix());
+    glm::mat4 inverseProjectionMatrix = glm::inverse(getProjectionMatrix());
+    screenPos = inverseViewMatrix * inverseProjectionMatrix * screenPos;
+    glm::vec3 worldPos(screenPos.x, screenPos.y, screenPos.z);
+    return worldPos;
 }
 
 glm::mat4 Camera::getViewMatrix() const
