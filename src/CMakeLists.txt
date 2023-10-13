@@ -20,12 +20,16 @@ target_sources(Levox
     main.cpp
     levox_imgui.h
     levox_imgui.cpp
+    graphics.h
+    graphics.cpp
     camera.h
     camera.cpp
     shader.h
     shader.cpp
     voxel_mesh.h
     voxel_mesh.cpp
+    event_handler.h
+    event_handler.cpp
 )
 
 find_package(OpenGL REQUIRED)
