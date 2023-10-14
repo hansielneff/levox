@@ -37,7 +37,7 @@ public:
     void orbit(f32 degreesX, f32 degreesY);
     void zoom(f32 amount);
 
-    glm::vec3 screenToWorld(f32 screenX, f32 screenY);
+    glm::vec3 screenToWorld(i32 x, i32 y, i32 width, i32 height, bool yUp = false);
 
     glm::mat4 getViewMatrix() const;
     glm::mat4 getProjectionMatrix() const;

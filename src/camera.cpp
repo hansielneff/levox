@@ -61,17 +61,15 @@ void Camera::zoom(f32 amount)
     if (newFOV > 0.0f) FOV = newFOV;
 }
 
-// TODO: This has not been tested properly yet.
-// Might work, who knows ¯\_(ツ)_/¯
-glm::vec3 Camera::screenToWorld(f32 screenX, f32 screenY)
+glm::vec3 Camera::screenToWorld(i32 x, i32 y, i32 width, i32 height, bool yUp)
 {
-    f32 screenZ;
-    glReadPixels(screenX, screenY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &screenZ);
-    glm::vec4 screenPos(screenX, screenY, screenZ, 1.0f);
-    glm::mat4 inverseViewMatrix = glm::inverse(getViewMatrix());
-    glm::mat4 inverseProjectionMatrix = glm::inverse(getProjectionMatrix());
-    screenPos = inverseViewMatrix * inverseProjectionMatrix * screenPos;
-    glm::vec3 worldPos(screenPos.x, screenPos.y, screenPos.z);
+    if (!yUp) y = height - y - 1;
+    f32 depth;
+    glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+    if (depth == 1.0f) return glm::vec3(0.0f);
+    glm::vec4 viewport(0, 0, width, height);
+    glm::vec3 screenPos(x, y, depth);
+    glm::vec3 worldPos = glm::unProject(screenPos, getViewMatrix(), getProjectionMatrix(), viewport);
     return worldPos;
 }
 
