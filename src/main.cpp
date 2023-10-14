@@ -40,6 +40,7 @@ int main()
         }
 
         window.setActive(false);
+        window.close();
         ImGui::SFML::Shutdown();
     }
     catch(const std::exception &e)
