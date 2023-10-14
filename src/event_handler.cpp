@@ -8,8 +8,9 @@
 
 #include "event_handler.hpp"
 #include "levox_imgui.hpp"
+#include "test_model.hpp"
 
-void handleWindowEvents(sf::Window &window, Camera &camera, bool &isAppRunning)
+void handleWindowEvents(sf::Window &window, Camera &camera, VoxelMesh &voxelMesh, bool &isAppRunning)
 {
     static bool middleMouseDown = false;
     static bool leftShiftDown = false;
@@ -48,6 +49,18 @@ void handleWindowEvents(sf::Window &window, Camera &camera, bool &isAppRunning)
             {
                 if (event.mouseButton.button == sf::Mouse::Middle)
                     middleMouseDown = true;
+                else
+                {
+                    sf::Vector2u windowSize = window.getSize();
+                    glm::vec3 worldPos = camera.screenToWorld(
+                        event.mouseButton.x, event.mouseButton.y, windowSize.x, windowSize.y);
+                    i32 gridX = worldPos.x;
+                    i32 gridY = worldPos.y;
+                    i32 gridZ = worldPos.z;
+                    std::cout << "VOXEL: (" << gridX << ", " << gridY << ", " << gridZ << ")" << std::endl;
+                    testModel2[gridZ][gridY][gridX].a = 0.0f;
+                    voxelMesh.generateMesh((VoxelData*)testModel2, 4, 4, 3);
+                }
             } break;
             case sf::Event::MouseButtonReleased:
             {
@@ -68,8 +81,14 @@ void handleWindowEvents(sf::Window &window, Camera &camera, bool &isAppRunning)
                 }
                 else
                 {
-                    glm::vec3 worldPos = camera.screenToWorld(event.mouseMove.x, event.mouseMove.y);
+                    sf::Vector2u windowSize = window.getSize();
+                    glm::vec3 worldPos = camera.screenToWorld(
+                        event.mouseMove.x, event.mouseMove.y, windowSize.x, windowSize.y);
                     std::cout << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << std::endl;
+                    i32 gridX = worldPos.x;
+                    i32 gridY = worldPos.y;
+                    i32 gridZ = worldPos.z;
+                    std::cout << gridX << ", " << gridY << ", " << gridZ << std::endl;
                 }
             } break;
             default:

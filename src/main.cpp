@@ -19,19 +19,19 @@ int main()
 
         if (!gladLoaderLoadGL())
             throw std::runtime_error("Error: Failed to load OpenGL extension libraries");
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glEnable(GL_DEPTH_TEST);
 
         Camera camera(glm::vec3(0.0f, 0.0f, 50.0f));
         Shader shader(vertexShaderSource, fragmentShaderSource);
         VoxelMesh voxelMesh((VoxelData*)testModel, 4, 4, 4);
-        voxelMesh.generateMesh((VoxelData*)testModel2, 4, 4, 4);
 
         sf::Clock deltaClock;
         sf::Time deltaTime = sf::Time::Zero;
         bool isAppRunning = true;
         while (isAppRunning)
         {
-            handleWindowEvents(window, camera, isAppRunning);
+            handleWindowEvents(window, camera, voxelMesh, isAppRunning);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             voxelMesh.render(window, camera, shader);
             renderImGui(window, deltaTime);
