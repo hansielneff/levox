@@ -18,8 +18,6 @@ target_sources(Levox
     glad/gl.c
     glad/egl.c
     main.cpp
-    levox_imgui.hpp
-    levox_imgui.cpp
     camera.hpp
     camera.cpp
     shader.hpp

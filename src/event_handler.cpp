@@ -3,11 +3,11 @@
 #ifdef X11_FOUND
     #include "glad/glx.h"
 #endif
+#include <imgui-SFML.h>
 
 #include <iostream>
 
 #include "event_handler.hpp"
-#include "levox_imgui.hpp"
 #include "test_model.hpp"
 
 void handleWindowEvents(sf::Window &window, Camera &camera, VoxelMesh &voxelMesh, bool &isAppRunning)
