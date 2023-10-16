@@ -35,8 +35,8 @@ int main()
         bool isAppRunning = true;
         while (isAppRunning)
         {
-            handleWindowEvents(window, camera, voxelMesh, isAppRunning);
             ImGui::SFML::Update(window, deltaTime);
+            handleWindowEvents(window, camera, voxelMesh, isAppRunning);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             voxelMesh.render(window, camera, shader);
             window.pushGLStates();
