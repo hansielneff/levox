@@ -38,7 +38,6 @@ private:
     u32 EBO;
     u32 VBO;
 
-    void initGLBuffers();
     void bufferMeshData(const VoxelVertex *vertices, const u32 *indices,
         u32 vertexCount, u32 indexCount);
 };

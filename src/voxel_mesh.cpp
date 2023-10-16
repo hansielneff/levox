@@ -11,7 +11,9 @@
 
 VoxelMesh::VoxelMesh(const VoxelData *voxelData, u32 width, u32 height, u32 depth)
 {
-    initGLBuffers();
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &EBO);
+    glGenBuffers(1, &VBO);
     generateMesh(voxelData, width, height, depth);
 }
 
@@ -112,13 +114,6 @@ void VoxelMesh::generateMesh(const VoxelData *voxelData, u32 width, u32 height, 
 
     delete[] vertices;
     delete[] indices;
-}
-
-void VoxelMesh::initGLBuffers()
-{
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &EBO);
-    glGenBuffers(1, &VBO);
 }
 
 void VoxelMesh::bufferMeshData(
