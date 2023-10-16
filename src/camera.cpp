@@ -98,6 +98,11 @@ glm::mat4 Camera::getProjectionMatrix() const
     }
 }
 
+glm::vec3 Camera::getLookDir() const
+{
+    return forward;
+}
+
 void Camera::calculateLocalVectors()
 {
     targetToCamera = position - target;
