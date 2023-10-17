@@ -20,6 +20,10 @@ void Toolbox::useActiveTool(VoxelArray *voxelArray, glm::ivec3 gridPos, FaceAxis
     u32 width = voxelArray->width;
     u32 height = voxelArray->height;
     u32 depth = voxelArray->depth;
+    
+    if (gridPos.x >= width || gridPos.y >= height || gridPos.z >= depth)
+        return;
+    
     RgbaData &voxel = voxelArray->data[gridPos.z * width * height + gridPos.y * width + gridPos.x];
 
     switch (activeTool)
@@ -29,6 +33,10 @@ void Toolbox::useActiveTool(VoxelArray *voxelArray, glm::ivec3 gridPos, FaceAxis
             if (faceAxis == FaceAxis::X) gridPos.x += lookDir.x > 0.0f ? 1 : -1;
             if (faceAxis == FaceAxis::Y) gridPos.y += lookDir.y > 0.0f ? 1 : -1;
             if (faceAxis == FaceAxis::Z) gridPos.z += lookDir.z > 0.0f ? 1 : -1;
+
+            if (gridPos.x >= width || gridPos.y >= height || gridPos.z >= depth)
+                return;
+
             RgbaData &neighbor_voxel = voxelArray->data[gridPos.z * width * height + gridPos.y * width + gridPos.x];
             neighbor_voxel.r = color[0];
             neighbor_voxel.g = color[1];
