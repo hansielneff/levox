@@ -1,5 +1,5 @@
-#ifndef VOXEL_MESH_H
-#define VOXEL_MESH_H
+#ifndef VOXEL_MESH_HPP
+#define VOXEL_MESH_HPP
 
 #include <SFML/Graphics.hpp>
 
