@@ -9,12 +9,12 @@
 
 #include "voxel_mesh.hpp"
 
-VoxelMesh::VoxelMesh(const VoxelData *voxelData, u32 width, u32 height, u32 depth)
+VoxelMesh::VoxelMesh(const VoxelArray *voxelArray)
 {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &EBO);
     glGenBuffers(1, &VBO);
-    generateMesh(voxelData, width, height, depth);
+    generateMesh(voxelArray);
 }
 
 VoxelMesh::~VoxelMesh()
@@ -48,8 +48,11 @@ void VoxelMesh::render(sf::RenderWindow &window,
 }
 
 // TODO: Don't waste time rendering obscured faces
-void VoxelMesh::generateMesh(const VoxelData *voxelData, u32 width, u32 height, u32 depth)
+void VoxelMesh::generateMesh(const VoxelArray *voxelArray)
 {
+    u32 width = voxelArray->width;
+    u32 height = voxelArray->height;
+    u32 depth = voxelArray->depth;
     u32 voxelCount = width * height * depth;
     u32 vertexCount = voxelCount * VOXEL_VERTEX_COUNT;
     u32 indexCount = voxelCount * VOXEL_INDEX_COUNT;
@@ -61,7 +64,7 @@ void VoxelMesh::generateMesh(const VoxelData *voxelData, u32 width, u32 height, 
     u32 invisibleVoxels = 0;
     for (u32 voxelIndex = 0; voxelIndex < voxelCount; voxelIndex++)
     {
-        const VoxelData &voxel = voxelData[voxelIndex];
+        const RgbaData &voxel = voxelArray->data[voxelIndex];
         if (voxel.a < 1.0f)
         {
             invisibleVoxels++;

@@ -6,6 +6,8 @@
 
 #include "event_handler.hpp"
 #include "camera.hpp"
+#include "voxel_mesh.hpp"
+#include "toolbox.hpp"
 #include "shader_source.hpp"
 #include "test_model.hpp"
 
@@ -28,7 +30,8 @@ int main()
 
         Camera camera(glm::vec3(0.0f, 0.0f, 50.0f));
         Shader shader(vertexShaderSource, fragmentShaderSource);
-        VoxelMesh voxelMesh((VoxelData*)testModel, 4, 4, 4);
+        VoxelMesh voxelMesh(&testModel);
+        Toolbox toolbox;
 
         sf::Clock deltaClock;
         sf::Time deltaTime = sf::Time::Zero;
@@ -36,7 +39,7 @@ int main()
         while (isAppRunning)
         {
             ImGui::SFML::Update(window, deltaTime);
-            handleWindowEvents(window, camera, voxelMesh, isAppRunning);
+            handleWindowEvents(window, camera, voxelMesh, toolbox, isAppRunning);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             voxelMesh.render(window, camera, shader);
             window.pushGLStates();

@@ -10,9 +10,15 @@
 #define VOXEL_VERTEX_COUNT 8
 #define VOXEL_INDEX_COUNT 6 * 6
 
-struct VoxelData
+struct RgbaData
 {
     f32 r, g, b, a;
+};
+
+struct VoxelArray
+{
+    u32 width, height, depth;
+    RgbaData data[];
 };
 
 struct VoxelVertex
@@ -24,11 +30,10 @@ struct VoxelVertex
 class VoxelMesh
 {
 public:
-    VoxelMesh(const VoxelData *voxelData, u32 width, u32 height, u32 depth);
+    VoxelMesh(const VoxelArray *voxelArray);
     ~VoxelMesh();
 
-    void generateMesh(const VoxelData *voxelData,
-        u32 width, u32 height, u32 depth);
+    void generateMesh(const VoxelArray *voxelArray);
 
     void render(sf::RenderWindow &window,
         const Camera &camera, const Shader &shader) const;

@@ -10,14 +10,17 @@
 #include "event_handler.hpp"
 #include "test_model.hpp"
 
-void handleWindowEvents(sf::Window &window, Camera &camera, VoxelMesh &voxelMesh, bool &isAppRunning)
+void handleWindowEvents(sf::Window &window, Camera &camera,
+    VoxelMesh &voxelMesh, Toolbox &toolbox, bool &isAppRunning)
 {
     static bool middleMouseDown = false;
     static bool leftShiftDown = false;
 
+    toolbox.renderImGui();
+
     for (auto event = sf::Event(); window.pollEvent(event);)
     {
-        ImGui::SFML::ProcessEvent(event);
+        ImGui::SFML::ProcessEvent(window, event);
         switch (event.type)
         {
             case sf::Event::Closed:
@@ -49,17 +52,34 @@ void handleWindowEvents(sf::Window &window, Camera &camera, VoxelMesh &voxelMesh
             {
                 if (event.mouseButton.button == sf::Mouse::Middle)
                     middleMouseDown = true;
-                else
+                else if (event.mouseButton.button == sf::Mouse::Left)
                 {
                     sf::Vector2u windowSize = window.getSize();
                     glm::vec3 worldPos = camera.screenToWorld(
                         event.mouseButton.x, event.mouseButton.y, windowSize.x, windowSize.y);
-                    i32 gridX = worldPos.x;
-                    i32 gridY = worldPos.y;
-                    i32 gridZ = worldPos.z;
-                    std::cout << "VOXEL: (" << gridX << ", " << gridY << ", " << gridZ << ")" << std::endl;
-                    testModel2[gridZ][gridY][gridX].a = 0.0f;
-                    voxelMesh.generateMesh((VoxelData*)testModel2, 4, 4, 3);
+                    if (glm::length(worldPos) == 0) break;
+
+                    f32 xDistFromWholeNum = glm::abs(worldPos.x - glm::round(worldPos.x));
+                    f32 yDistFromWholeNum = glm::abs(worldPos.y - glm::round(worldPos.y));
+                    f32 zDistFromWholeNum = glm::abs(worldPos.z - glm::round(worldPos.z));
+
+                    FaceAxis faceAxis;
+                    if (xDistFromWholeNum < yDistFromWholeNum && xDistFromWholeNum < zDistFromWholeNum)
+                        faceAxis = FaceAxis::X;
+                    else if (yDistFromWholeNum < xDistFromWholeNum && yDistFromWholeNum < zDistFromWholeNum)
+                        faceAxis = FaceAxis::Y;
+                    else if (zDistFromWholeNum < xDistFromWholeNum && zDistFromWholeNum < yDistFromWholeNum)
+                        faceAxis = FaceAxis::Z;
+                    else
+                        throw std::runtime_error("Error: invalid FaceAxis");
+
+                    glm::vec3 lookDir = camera.getLookDir();
+                    i32 gridX = faceAxis == FaceAxis::X ? glm::round(worldPos.x) - 1 * (lookDir.x > 0.0f) : worldPos.x;
+                    i32 gridY = faceAxis == FaceAxis::Y ? glm::round(worldPos.y) - 1 * (lookDir.y > 0.0f) : worldPos.y;
+                    i32 gridZ = faceAxis == FaceAxis::Z ? glm::round(worldPos.z) - 1 * (lookDir.z > 0.0f) : worldPos.z;
+
+                    toolbox.useActiveTool(&testModel, {gridX, gridY, gridZ}, faceAxis, lookDir);
+                    voxelMesh.generateMesh(&testModel);
                 }
             } break;
             case sf::Event::MouseButtonReleased:
@@ -78,17 +98,6 @@ void handleWindowEvents(sf::Window &window, Camera &camera, VoxelMesh &voxelMesh
                     leftShiftDown ?
                         camera.pan(mouseDelta.x, mouseDelta.y) :
                         camera.orbit(mouseDelta.x, mouseDelta.y);
-                }
-                else
-                {
-                    sf::Vector2u windowSize = window.getSize();
-                    glm::vec3 worldPos = camera.screenToWorld(
-                        event.mouseMove.x, event.mouseMove.y, windowSize.x, windowSize.y);
-                    std::cout << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << std::endl;
-                    i32 gridX = worldPos.x;
-                    i32 gridY = worldPos.y;
-                    i32 gridZ = worldPos.z;
-                    std::cout << gridX << ", " << gridY << ", " << gridZ << std::endl;
                 }
             } break;
             default:

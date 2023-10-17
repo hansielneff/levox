@@ -26,6 +26,8 @@ target_sources(Levox
     voxel_mesh.cpp
     event_handler.hpp
     event_handler.cpp
+    toolbox.hpp
+    toolbox.cpp
 )
 
 find_package(OpenGL REQUIRED)
