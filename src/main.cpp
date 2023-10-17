@@ -30,7 +30,8 @@ int main()
 
         Camera camera(glm::vec3(0.0f, 0.0f, 50.0f));
         Shader shader(vertexShaderSource, fragmentShaderSource);
-        VoxelMesh voxelMesh(&testModel);
+        VoxelArray *testModel = allocTestModel();
+        VoxelMesh voxelMesh(testModel);
         Toolbox toolbox;
 
         sf::Clock deltaClock;

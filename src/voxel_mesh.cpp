@@ -9,7 +9,8 @@
 
 #include "voxel_mesh.hpp"
 
-VoxelMesh::VoxelMesh(const VoxelArray *voxelArray)
+VoxelMesh::VoxelMesh(VoxelArray *voxelArray)
+: voxelArray(voxelArray)
 {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &EBO);
@@ -19,6 +20,7 @@ VoxelMesh::VoxelMesh(const VoxelArray *voxelArray)
 
 VoxelMesh::~VoxelMesh()
 {
+    delete voxelArray;
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &EBO);
     glDeleteBuffers(1, &VBO);
@@ -48,7 +50,7 @@ void VoxelMesh::render(sf::RenderWindow &window,
 }
 
 // TODO: Don't waste time rendering obscured faces
-void VoxelMesh::generateMesh(const VoxelArray *voxelArray)
+void VoxelMesh::generateMesh(VoxelArray *voxelArray)
 {
     u32 width = voxelArray->width;
     u32 height = voxelArray->height;

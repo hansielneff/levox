@@ -8,7 +8,6 @@
 #include <iostream>
 
 #include "event_handler.hpp"
-#include "test_model.hpp"
 
 void handleWindowEvents(sf::Window &window, Camera &camera,
     VoxelMesh &voxelMesh, Toolbox &toolbox, bool &isAppRunning)
@@ -78,8 +77,8 @@ void handleWindowEvents(sf::Window &window, Camera &camera,
                     i32 gridY = faceAxis == FaceAxis::Y ? glm::round(worldPos.y) - 1 * (lookDir.y > 0.0f) : worldPos.y;
                     i32 gridZ = faceAxis == FaceAxis::Z ? glm::round(worldPos.z) - 1 * (lookDir.z > 0.0f) : worldPos.z;
 
-                    toolbox.useActiveTool(&testModel, {gridX, gridY, gridZ}, faceAxis, lookDir);
-                    voxelMesh.generateMesh(&testModel);
+                    toolbox.useActiveTool(voxelMesh.voxelArray, {gridX, gridY, gridZ}, faceAxis, lookDir);
+                    voxelMesh.generateMesh(voxelMesh.voxelArray);
                 }
             } break;
             case sf::Event::MouseButtonReleased:

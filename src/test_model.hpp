@@ -1,3 +1,6 @@
+#ifndef TEST_MODEL_HPP
+#define TEST_MODEL_HPP
+
 #include "voxel_mesh.hpp"
 
 static VoxelArray testModel = {
@@ -69,3 +72,16 @@ static VoxelArray testModel = {
         {1.0f, 1.0f, 0.0f, 0.0f}
     }
 };
+
+VoxelArray *allocTestModel()
+{
+    VoxelArray *model = (VoxelArray*)malloc(3 * sizeof(i32) + 64 * sizeof(RgbaData));
+    model->width = 4;
+    model->height = 4;
+    model->depth = 4;
+    for (u32 i = 0; i < 64; i++)
+        model->data[i] = testModel.data[i];
+    return model;
+}
+
+#endif

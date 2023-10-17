@@ -30,10 +30,12 @@ struct VoxelVertex
 class VoxelMesh
 {
 public:
-    VoxelMesh(const VoxelArray *voxelArray);
+    VoxelArray *voxelArray;
+
+    VoxelMesh(VoxelArray *voxelArray);
     ~VoxelMesh();
 
-    void generateMesh(const VoxelArray *voxelArray);
+    void generateMesh(VoxelArray *voxelArray);
 
     void render(sf::RenderWindow &window,
         const Camera &camera, const Shader &shader) const;
