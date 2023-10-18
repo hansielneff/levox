@@ -37,8 +37,8 @@ if(WIN32)
   target_sources(Levox PRIVATE nfd/nfd_win.cpp)
 endif()
 
-find_package(GTK, GTK2)
-if(GTK_FOUND OR GTK2_FOUND)
+find_package(GTK)
+if(GTK_FOUND)
   target_sources(Levox PRIVATE nfd/nfd_gtk.c)
 endif()
 
