@@ -66,6 +66,11 @@ void VoxelMesh::render(sf::RenderWindow &window,
 // TODO: Don't waste time rendering obscured faces
 void VoxelMesh::generateMesh(VoxelArray *voxelArray)
 {
+    if (voxelArray)
+        this->voxelArray = voxelArray;
+    else
+        voxelArray = this->voxelArray;
+
     u32 width = voxelArray->width;
     u32 height = voxelArray->height;
     u32 depth = voxelArray->depth;

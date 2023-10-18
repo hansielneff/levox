@@ -29,7 +29,7 @@ public:
     VoxelMesh(VoxelArray *voxelArray);
     ~VoxelMesh();
 
-    void generateMesh(VoxelArray *voxelArray);
+    void generateMesh(VoxelArray *voxelArray = NULL);
 
     void render(sf::RenderWindow &window,
         const Camera &camera, const Shader &shader) const;
