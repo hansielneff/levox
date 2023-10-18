@@ -7,12 +7,17 @@
 
 void Toolbox::renderImGui(VoxelMesh &voxelMesh)
 {
-    ImGui::Begin("Toolbox", NULL, ImGuiWindowFlags_MenuBar);
-
+    ImGui::SetNextWindowSize(ImVec2(250, 170));
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::Begin("Toolbox", NULL, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoResize);
     if (ImGui::BeginMenuBar())
     {
         if (ImGui::BeginMenu("File"))
         {
+            if (ImGui::MenuItem("New", "Ctrl+N"))
+            {
+                voxelMesh.generateMesh(voxelArrayCreate(16, 16, 16));
+            }
             if (ImGui::MenuItem("Open..", "Ctrl+O"))
             {
                 nfdchar_t *outPath = NULL;
@@ -43,7 +48,6 @@ void Toolbox::renderImGui(VoxelMesh &voxelMesh)
     ImGui::RadioButton("Erase", (i32*)&activeTool, (i32)Tool::Erase);
     ImGui::RadioButton("Paint", (i32*)&activeTool, (i32)Tool::Paint);
     ImGui::RadioButton("Eyedropper", (i32*)&activeTool, (i32)Tool::Eyedropper);
-
     ImGui::End();
 }
 
