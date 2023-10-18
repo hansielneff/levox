@@ -27,8 +27,6 @@ target_sources(Levox
     voxel_array.cpp
     voxel_mesh.hpp
     voxel_mesh.cpp
-    voxel_grid.hpp
-    voxel_grid.cpp
     event_handler.hpp
     event_handler.cpp
     toolbox.hpp
