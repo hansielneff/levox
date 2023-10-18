@@ -8,7 +8,6 @@
 #include "camera.hpp"
 #include "voxel_mesh.hpp"
 #include "toolbox.hpp"
-#include "shader_source.hpp"
 
 int main()
 {
@@ -27,9 +26,8 @@ int main()
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glEnable(GL_DEPTH_TEST);
 
-        Camera camera(glm::vec3(0.0f, 0.0f, 50.0f));
-        Shader shader(vertexShaderSource, fragmentShaderSource);
-        VoxelMesh voxelMesh(32, 32, 32);
+        Camera camera(glm::vec3(50.0f, 50.0f, 50.0f));
+        VoxelMesh voxelMesh(16, 16, 16);
         Toolbox toolbox;
 
         sf::Clock deltaClock;
@@ -40,7 +38,7 @@ int main()
             ImGui::SFML::Update(window, deltaTime);
             handleWindowEvents(window, camera, voxelMesh, toolbox, isAppRunning);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            voxelMesh.render(window, camera, shader);
+            voxelMesh.render(camera);
             window.pushGLStates();
             ImGui::SFML::Render(window);
             window.popGLStates();

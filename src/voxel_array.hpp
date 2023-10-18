@@ -16,7 +16,7 @@ struct VoxelArray
     RgbaData data[];
 };
 
-VoxelArray *voxelArrayCreateEmpty(u32 width, u32 height, u32 depth);
+VoxelArray *voxelArrayCreate(u32 width, u32 height, u32 depth);
 void voxelArrayDestroy(VoxelArray *voxelArray);
 
 VoxelArray *voxelArrayReadFile(const std::string &fileName);

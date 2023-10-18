@@ -1,4 +1,7 @@
-const char *vertexShaderSource =
+#ifndef SHADER_SOURCE_HPP
+#define SHADER_SOURCE_HPP
+
+static const char *voxelMeshVertexShader =
 R"(
 #version 330 core
 
@@ -18,7 +21,7 @@ void main()
 }
 )";
 
-const char *fragmentShaderSource =
+static const char *voxelMeshFragmentShader =
 R"(
 #version 330 core
 
@@ -31,3 +34,5 @@ void main()
     fragColor = vec4(vertexColor, 1.0f);
 } 
 )";
+
+#endif

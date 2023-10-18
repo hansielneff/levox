@@ -8,26 +8,18 @@
 #endif
 
 #include "voxel_mesh.hpp"
+#include "shader_source.hpp"
 
 VoxelMesh::VoxelMesh(u32 width, u32 height, u32 depth)
-: voxelArray(voxelArrayCreateEmpty(width, height, depth))
+: shader(voxelMeshVertexShader, voxelMeshFragmentShader)
+, voxelArray(voxelArrayCreate(width, height, depth))
 , vertexCount(0)
 , indexCount(0)
 {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &EBO);
     glGenBuffers(1, &VBO);
-}
-
-VoxelMesh::VoxelMesh(VoxelArray *voxelArray)
-: voxelArray(voxelArray)
-, vertexCount(0)
-, indexCount(0)
-{
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &EBO);
-    glGenBuffers(1, &VBO);
-    generateMesh(voxelArray);
+    generateMesh();
 }
 
 VoxelMesh::~VoxelMesh()
@@ -38,8 +30,7 @@ VoxelMesh::~VoxelMesh()
     glDeleteBuffers(1, &VBO);
 }
 
-void VoxelMesh::render(sf::RenderWindow &window,
-    const Camera &camera, const Shader &shader) const
+void VoxelMesh::render(const Camera &camera) const
 {
     if (indexCount == 0) return;
 
@@ -67,9 +58,14 @@ void VoxelMesh::render(sf::RenderWindow &window,
 void VoxelMesh::generateMesh(VoxelArray *voxelArray)
 {
     if (voxelArray)
+    {
         this->voxelArray = voxelArray;
+    }
     else
+    {
         voxelArray = this->voxelArray;
+        assert(voxelArray != NULL);
+    }
 
     u32 width = voxelArray->width;
     u32 height = voxelArray->height;

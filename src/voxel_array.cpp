@@ -1,20 +1,18 @@
 #include <fstream>
-#include <iterator>
-#include <vector>
 #include <cassert>
 
 #include "voxel_array.hpp"
 
-VoxelArray *voxelArrayCreateEmpty(u32 width, u32 height, u32 depth)
+VoxelArray *voxelArrayCreate(u32 width, u32 height, u32 depth)
 {
     assert(width > 0 && height > 0 && depth > 0);
-    // NOTE: () at the end makes 'new' zero-initialize according to C++11 standard
-    // https://stackoverflow.com/questions/7546620/operator-new-initializes-memory-to-zero
     VoxelArray *voxelArray = (VoxelArray*) new char
-        [3 * sizeof(u32) + width * height * depth * 4 * sizeof(f32)]();
+        [3 * sizeof(u32) + width * height * depth * 4 * sizeof(f32)];
     voxelArray->width = width;
     voxelArray->height = height;
     voxelArray->depth = depth;
+    for (u32 i = 0; i < width * height * depth; i++)
+        voxelArray->data[i] = {1.0f, 1.0f, 1.0f, 1.0f};
     return voxelArray;
 }
 
@@ -30,7 +28,7 @@ VoxelArray *voxelArrayReadFile(const std::string &fileName)
     input.read((char*)&width, sizeof(u32));
     input.read((char*)&height, sizeof(u32));
     input.read((char*)&depth, sizeof(u32));
-    VoxelArray *voxelArray = voxelArrayCreateEmpty(width, height, depth);
+    VoxelArray *voxelArray = voxelArrayCreate(width, height, depth);
     input.read((char*)&voxelArray->data, width * height * depth * 4 * sizeof(f32));
     return voxelArray;
 }
