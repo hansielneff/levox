@@ -27,6 +27,8 @@ target_sources(Levox
     voxel_array.cpp
     voxel_mesh.hpp
     voxel_mesh.cpp
+    voxel_grid.hpp
+    voxel_grid.cpp
     event_handler.hpp
     event_handler.cpp
     toolbox.hpp
@@ -37,8 +39,12 @@ if(WIN32)
   target_sources(Levox PRIVATE nfd/nfd_win.cpp)
 endif()
 
-find_package(GTK)
-if(GTK_FOUND)
+if(APPLE)
+  target_sources(Levox PRIVATE nfd/cocoa.m)
+  target_link_libraries(Levox PRIVATE "-framework AppKit")
+endif()
+
+if(UNIX)
   target_sources(Levox PRIVATE nfd/nfd_gtk.c)
 endif()
 
