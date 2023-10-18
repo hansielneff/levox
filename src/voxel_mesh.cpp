@@ -59,6 +59,8 @@ void VoxelMesh::generateMesh(VoxelArray *voxelArray)
 {
     if (voxelArray)
     {
+        if (this->voxelArray && this->voxelArray != voxelArray)
+            voxelArrayDestroy(this->voxelArray);
         this->voxelArray = voxelArray;
     }
     else
