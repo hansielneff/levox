@@ -16,8 +16,8 @@ enum class Tool
 class Toolbox
 {
 public:
-    void renderImGui();
-    void useActiveTool(VoxelArray *voxelArray, glm::ivec3 gridPos, FaceAxis faceAxis, glm::vec3 lookDir);
+    void renderImGui(VoxelMesh &voxelMesh);
+    void useActiveTool(VoxelArray &voxelArray, glm::ivec3 gridPos, FaceAxis faceAxis, glm::vec3 lookDir);
 
 private:
     Tool activeTool = Tool::Draw;

@@ -15,7 +15,7 @@ void handleWindowEvents(sf::Window &window, Camera &camera,
     static bool middleMouseDown = false;
     static bool leftShiftDown = false;
 
-    toolbox.renderImGui();
+    toolbox.renderImGui(voxelMesh);
 
     for (auto event = sf::Event(); window.pollEvent(event);)
     {
@@ -77,7 +77,7 @@ void handleWindowEvents(sf::Window &window, Camera &camera,
                     i32 gridY = faceAxis == FaceAxis::Y ? glm::round(worldPos.y) - 1 * (lookDir.y > 0.0f) : worldPos.y;
                     i32 gridZ = faceAxis == FaceAxis::Z ? glm::round(worldPos.z) - 1 * (lookDir.z > 0.0f) : worldPos.z;
 
-                    toolbox.useActiveTool(voxelMesh.voxelArray, {gridX, gridY, gridZ}, faceAxis, lookDir);
+                    toolbox.useActiveTool(*voxelMesh.voxelArray, {gridX, gridY, gridZ}, faceAxis, lookDir);
                     voxelMesh.generateMesh(voxelMesh.voxelArray);
                 }
             } break;
