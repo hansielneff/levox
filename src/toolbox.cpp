@@ -21,7 +21,7 @@ void Toolbox::renderImGui(VoxelMesh &voxelMesh)
             if (ImGui::MenuItem("Open..", "Ctrl+O"))
             {
                 nfdchar_t *outPath = NULL;
-                nfdresult_t result = NFD_OpenDialog("lvx", NULL, &outPath);
+                nfdresult_t result = NFD_OpenDialog("levox", NULL, &outPath);
 
                 if (result == NFD_OKAY)
                     voxelMesh.generateMesh(voxelArrayReadFile(outPath));
@@ -31,7 +31,7 @@ void Toolbox::renderImGui(VoxelMesh &voxelMesh)
             if (ImGui::MenuItem("Save", "Ctrl+S"))
             {
                 nfdchar_t *outPath = NULL;
-                nfdresult_t result = NFD_SaveDialog("lvx", NULL, &outPath);
+                nfdresult_t result = NFD_SaveDialog("levox", NULL, &outPath);
 
                 if (result == NFD_OKAY)
                     voxelArrayWriteFile(outPath, voxelMesh.voxelArray);
