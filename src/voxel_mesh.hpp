@@ -4,22 +4,12 @@
 #include <SFML/Graphics.hpp>
 
 #include "types.hpp"
+#include "voxel_array.hpp"
 #include "camera.hpp"
 #include "shader.hpp"
 
 #define VOXEL_VERTEX_COUNT 8
 #define VOXEL_INDEX_COUNT 6 * 6
-
-struct RgbaData
-{
-    f32 r, g, b, a;
-};
-
-struct VoxelArray
-{
-    u32 width, height, depth;
-    RgbaData data[];
-};
 
 struct VoxelVertex
 {
@@ -30,8 +20,12 @@ struct VoxelVertex
 class VoxelMesh
 {
 public:
+    u32 vertexCount;
+    u32 indexCount;
+
     VoxelArray *voxelArray;
 
+    VoxelMesh(u32 width, u32 height, u32 depth);
     VoxelMesh(VoxelArray *voxelArray);
     ~VoxelMesh();
 
@@ -45,8 +39,7 @@ private:
     u32 EBO;
     u32 VBO;
 
-    void bufferMeshData(const VoxelVertex *vertices, const u32 *indices,
-        u32 vertexCount, u32 indexCount);
+    void bufferMeshData(const VoxelVertex *vertices, const u32 *indices);
 };
 
 #endif

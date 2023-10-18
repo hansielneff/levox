@@ -9,7 +9,6 @@
 #include "voxel_mesh.hpp"
 #include "toolbox.hpp"
 #include "shader_source.hpp"
-#include "test_model.hpp"
 
 int main()
 {
@@ -30,8 +29,7 @@ int main()
 
         Camera camera(glm::vec3(0.0f, 0.0f, 50.0f));
         Shader shader(vertexShaderSource, fragmentShaderSource);
-        VoxelArray *testModel = allocTestModel();
-        VoxelMesh voxelMesh(testModel);
+        VoxelMesh voxelMesh(32, 32, 32);
         Toolbox toolbox;
 
         sf::Clock deltaClock;

@@ -9,8 +9,20 @@
 
 #include "voxel_mesh.hpp"
 
+VoxelMesh::VoxelMesh(u32 width, u32 height, u32 depth)
+: voxelArray(voxelArrayCreateEmpty(width, height, depth))
+, vertexCount(0)
+, indexCount(0)
+{
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &EBO);
+    glGenBuffers(1, &VBO);
+}
+
 VoxelMesh::VoxelMesh(VoxelArray *voxelArray)
 : voxelArray(voxelArray)
+, vertexCount(0)
+, indexCount(0)
 {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &EBO);
@@ -20,7 +32,7 @@ VoxelMesh::VoxelMesh(VoxelArray *voxelArray)
 
 VoxelMesh::~VoxelMesh()
 {
-    delete voxelArray;
+    voxelArrayDestroy(voxelArray);
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &EBO);
     glDeleteBuffers(1, &VBO);
@@ -29,6 +41,8 @@ VoxelMesh::~VoxelMesh()
 void VoxelMesh::render(sf::RenderWindow &window,
     const Camera &camera, const Shader &shader) const
 {
+    if (indexCount == 0) return;
+
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = camera.getViewMatrix();
     glm::mat4 projection = camera.getProjectionMatrix();
@@ -45,7 +59,7 @@ void VoxelMesh::render(sf::RenderWindow &window,
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 2304, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
@@ -56,8 +70,8 @@ void VoxelMesh::generateMesh(VoxelArray *voxelArray)
     u32 height = voxelArray->height;
     u32 depth = voxelArray->depth;
     u32 voxelCount = width * height * depth;
-    u32 vertexCount = voxelCount * VOXEL_VERTEX_COUNT;
-    u32 indexCount = voxelCount * VOXEL_INDEX_COUNT;
+    vertexCount = voxelCount * VOXEL_VERTEX_COUNT;
+    indexCount = voxelCount * VOXEL_INDEX_COUNT;
     VoxelVertex *vertices = new VoxelVertex[vertexCount];
     u32 *indices = new u32[indexCount];
 
@@ -69,6 +83,8 @@ void VoxelMesh::generateMesh(VoxelArray *voxelArray)
         const RgbaData &voxel = voxelArray->data[voxelIndex];
         if (voxel.a < 1.0f)
         {
+            vertexCount -= VOXEL_VERTEX_COUNT;
+            indexCount -= VOXEL_INDEX_COUNT;
             invisibleVoxels++;
             continue;
         }
@@ -115,15 +131,13 @@ void VoxelMesh::generateMesh(VoxelArray *voxelArray)
                 VOXEL_VERTEX_COUNT + index_offsets[i];
     }
 
-    bufferMeshData(vertices, indices, vertexCount, indexCount);
+    bufferMeshData(vertices, indices);
 
     delete[] vertices;
     delete[] indices;
 }
 
-void VoxelMesh::bufferMeshData(
-    const VoxelVertex *vertices, const u32 *indices,
-    u32 vertexCount, u32 indexCount)
+void VoxelMesh::bufferMeshData(const VoxelVertex *vertices, const u32 *indices)
 {
     glBindVertexArray(VAO);
 

@@ -22,6 +22,8 @@ target_sources(Levox
     camera.cpp
     shader.hpp
     shader.cpp
+    voxel_array.hpp
+    voxel_array.cpp
     voxel_mesh.hpp
     voxel_mesh.cpp
     event_handler.hpp
