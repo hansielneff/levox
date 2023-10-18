@@ -17,6 +17,7 @@ target_sources(Levox
   PRIVATE
     glad/gl.c
     glad/egl.c
+    nfd/nfd_common.c
     main.cpp
     camera.hpp
     camera.cpp
@@ -32,6 +33,15 @@ target_sources(Levox
     toolbox.cpp
 )
 
+if(WIN32)
+  target_sources(Levox PRIVATE nfd/nfd_win.cpp)
+endif()
+
+find_package(GTK, GTK2)
+if(GTK_FOUND OR GTK2_FOUND)
+  target_sources(Levox PRIVATE nfd/nfd_gtk.c)
+endif()
+
 find_package(OpenGL REQUIRED)
 find_package(X11)
 if(X11_FOUND)
@@ -41,7 +51,7 @@ if(X11_FOUND)
   target_link_libraries(Levox PRIVATE ${X11_LIBRARIES})
 endif()
 
-target_include_directories(Levox PRIVATE glad/)
+target_include_directories(Levox PRIVATE glad/ nfd/include)
 target_link_libraries(Levox PRIVATE ImGui-SFML::ImGui-SFML OpenGL::GL glm)
 target_compile_features(Levox PRIVATE cxx_std_17)
 
