@@ -21,7 +21,7 @@ public:
 
 private:
     Tool activeTool = Tool::Draw;
-    f32 color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+    f32 color[4] = {1.0f, 0.0f, 0.0f, 1.0f};
 };
 
 #endif
