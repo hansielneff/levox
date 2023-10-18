@@ -35,15 +35,16 @@ target_sources(Levox
 
 if(WIN32)
   target_sources(Levox PRIVATE nfd/nfd_win.cpp)
-endif()
-
-if(APPLE)
+elseif(APPLE)
   target_sources(Levox PRIVATE nfd/nfd_cocoa.m)
   target_link_libraries(Levox PRIVATE "-framework AppKit")
-endif()
-
-if(UNIX)
+elseif(UNIX)
   target_sources(Levox PRIVATE nfd/nfd_gtk.c)
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
+  include_directories(${GTK3_INCLUDE_DIRS})
+  link_directories(${GTK3_LIBRARY_DIRS})
+  add_definitions(${GTK3_CFLAGS_OTHER})
 endif()
 
 find_package(OpenGL REQUIRED)
