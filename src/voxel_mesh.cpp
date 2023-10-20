@@ -108,7 +108,7 @@ void VoxelMesh::generateMesh(VoxelArray *voxelArray)
         f32 z = voxelIndex / (width * height);
         f32 y = (voxelIndex % (width * height)) / width;
         f32 x = (voxelIndex % (width * height)) % width;
-        for (u32 i = 0; i < 8; i++)
+        for (u32 i = 0; i < VOXEL_VERTEX_COUNT; i++)
         {
             *(vertex++) = {
                 x + vertex_offsets[i * 3],
