@@ -12,7 +12,7 @@ VoxelArray *voxelArrayCreate(u32 width, u32 height, u32 depth)
     voxelArray->height = height;
     voxelArray->depth = depth;
     for (u32 i = 0; i < width * height * depth; i++)
-        voxelArray->data[i] = {1.0f, 1.0f, 1.0f, 1.0f};
+        voxelArray->data[i] = {0.8f, 0.8f, 0.8f, 1.0f};
     return voxelArray;
 }
 
