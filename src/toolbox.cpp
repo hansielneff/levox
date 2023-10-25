@@ -8,6 +8,13 @@
 void Toolbox::renderImGui(VoxelMesh &voxelMesh)
 {
     static glm::ivec3 modelSize = {16, 16, 16};
+    static glm::ivec3 prevModelSize = modelSize;
+
+    if (prevModelSize != modelSize)
+    {
+        prevModelSize = modelSize;
+        voxelMesh.generateMesh(voxelArrayCreate(modelSize.x, modelSize.y, modelSize.z));
+    }
 
     ImGui::SetNextWindowSize(ImVec2(350, 260));
     ImGui::SetNextWindowPos(ImVec2(0, 0));
