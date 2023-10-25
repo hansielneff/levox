@@ -7,7 +7,9 @@
 
 void Toolbox::renderImGui(VoxelMesh &voxelMesh)
 {
-    ImGui::SetNextWindowSize(ImVec2(250, 170));
+    static glm::ivec3 modelSize = {16, 16, 16};
+
+    ImGui::SetNextWindowSize(ImVec2(250, 190));
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::Begin("Toolbox", NULL, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoResize);
     if (ImGui::BeginMenuBar())
@@ -16,7 +18,8 @@ void Toolbox::renderImGui(VoxelMesh &voxelMesh)
         {
             if (ImGui::MenuItem("New", "Ctrl+N"))
             {
-                voxelMesh.generateMesh(voxelArrayCreate(16, 16, 16));
+                voxelMesh.generateMesh(voxelArrayCreate(
+                    modelSize.x, modelSize.y, modelSize.z));
             }
             if (ImGui::MenuItem("Open..", "Ctrl+O"))
             {
@@ -43,6 +46,7 @@ void Toolbox::renderImGui(VoxelMesh &voxelMesh)
         ImGui::EndMenuBar();
     }
 
+    ImGui::DragInt3("Size", (i32*)&modelSize, 0.1f, 1, 64);
     ImGui::ColorEdit4("Color", color);
     ImGui::RadioButton("Draw", (i32*)&activeTool, (i32)Tool::Draw);
     ImGui::RadioButton("Erase", (i32*)&activeTool, (i32)Tool::Erase);
@@ -62,6 +66,8 @@ void Toolbox::useActiveTool(VoxelArray &voxelArray, glm::ivec3 gridPos, FaceAxis
     
     RgbaData &voxel = voxelArray.data[gridPos.z * width * height + gridPos.y * width + gridPos.x];
 
+    if (voxel.a != 1.0f) return;
+
     switch (activeTool)
     {
         case Tool::Draw:
@@ -74,6 +80,7 @@ void Toolbox::useActiveTool(VoxelArray &voxelArray, glm::ivec3 gridPos, FaceAxis
                 return;
 
             RgbaData &neighbor_voxel = voxelArray.data[gridPos.z * width * height + gridPos.y * width + gridPos.x];
+            if (neighbor_voxel.a == 1.0f) return;
             neighbor_voxel.r = color[0];
             neighbor_voxel.g = color[1];
             neighbor_voxel.b = color[2];
