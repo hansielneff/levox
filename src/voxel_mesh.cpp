@@ -6,6 +6,8 @@
 #ifdef X11_FOUND
     #include "glad/glx.h"
 #endif
+#include <imgui-SFML.h>
+#include <imgui.h>
 
 #include "voxel_mesh.hpp"
 #include "shader_source.hpp"
@@ -48,6 +50,24 @@ void VoxelMesh::render(const Camera &camera) const
 
     u32 projectionLoc = glGetUniformLocation(shader.ID, "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+    static bool showGrid = true;
+    u32 showGridLoc = glGetUniformLocation(shader.ID, "showGrid");
+    glUniform1i(showGridLoc, showGrid);
+
+    static float gridThickness = 0.05f;
+    u32 gridThicknessLoc = glGetUniformLocation(shader.ID, "gridThickness");
+    glUniform1f(gridThicknessLoc, gridThickness);
+
+    static f32 gridColor[] = {1.0f, 1.0f, 1.0f};
+    u32 gridColorLoc = glGetUniformLocation(shader.ID, "gridColor");
+    glUniform3fv(gridColorLoc, 1, gridColor);
+
+    ImGui::Begin("Toolbox");
+    ImGui::Checkbox("Show grid", &showGrid);
+    ImGui::DragFloat("Grid thickness", &gridThickness, 0.001f, 0.0f, 0.25f);
+    ImGui::ColorEdit3("Grid color", gridColor);
+    ImGui::End();
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);

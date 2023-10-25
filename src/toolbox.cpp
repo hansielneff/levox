@@ -9,19 +9,19 @@ void Toolbox::renderImGui(VoxelMesh &voxelMesh)
 {
     static glm::ivec3 modelSize = {16, 16, 16};
 
-    ImGui::SetNextWindowSize(ImVec2(250, 190));
+    ImGui::SetNextWindowSize(ImVec2(350, 260));
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::Begin("Toolbox", NULL, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoResize);
     if (ImGui::BeginMenuBar())
     {
         if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("New", "Ctrl+N"))
+            if (ImGui::MenuItem("New"))
             {
                 voxelMesh.generateMesh(voxelArrayCreate(
                     modelSize.x, modelSize.y, modelSize.z));
             }
-            if (ImGui::MenuItem("Open..", "Ctrl+O"))
+            if (ImGui::MenuItem("Open.."))
             {
                 nfdchar_t *outPath = NULL;
                 nfdresult_t result = NFD_OpenDialog("levox", NULL, &outPath);
@@ -31,7 +31,7 @@ void Toolbox::renderImGui(VoxelMesh &voxelMesh)
                 else if (result != NFD_CANCEL)
                     throw std::runtime_error("Error: failed to open file");
             }
-            if (ImGui::MenuItem("Save", "Ctrl+S"))
+            if (ImGui::MenuItem("Save"))
             {
                 nfdchar_t *outPath = NULL;
                 nfdresult_t result = NFD_SaveDialog("levox", NULL, &outPath);
