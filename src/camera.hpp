@@ -30,7 +30,7 @@ public:
         f32 FOV = 45.0f,
         f32 aspect = 16.0f / 9.0f,
         f32 near_plane = 0.1f,
-        f32 far_plane = 100.0f
+        f32 far_plane = 1000.0f
     );
 
     void pan(f32 degreesX, f32 degreesY);
