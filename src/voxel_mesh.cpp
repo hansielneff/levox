@@ -94,15 +94,15 @@ void VoxelMesh::generateMesh(VoxelArray *voxelArray)
 
         // These are the local position offsets
         // that make up a cube (8 unique vertices)
-        static const f32 vertex_offsets[] = {
-            0.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            1.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 1.0f,
-            0.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
+        static const glm::vec3 vertex_offsets[] = {
+            {0.0f, 0.0f, 0.0f},
+            {1.0f, 0.0f, 0.0f},
+            {0.0f, 1.0f, 0.0f},
+            {1.0f, 1.0f, 0.0f},
+            {0.0f, 0.0f, 1.0f},
+            {1.0f, 0.0f, 1.0f},
+            {0.0f, 1.0f, 1.0f},
+            {1.0f, 1.0f, 1.0f}
         };
 
         f32 z = voxelIndex / (width * height);
@@ -111,9 +111,9 @@ void VoxelMesh::generateMesh(VoxelArray *voxelArray)
         for (u32 i = 0; i < VOXEL_VERTEX_COUNT; i++)
         {
             *(vertex++) = {
-                x + vertex_offsets[i * 3],
-                y + vertex_offsets[i * 3 + 1],
-                z + vertex_offsets[i * 3 + 2],
+                x + vertex_offsets[i].x,
+                y + vertex_offsets[i].y,
+                z + vertex_offsets[i].z,
                 voxel.r, voxel.g, voxel.b
             };
         }
