@@ -5,9 +5,8 @@
 
 #include "camera.hpp"
 #include "voxel_mesh.hpp"
-#include "toolbox.hpp"
 
 void handleWindowEvents(sf::Window &window, Camera &camera,
-    VoxelMesh &vertexMesh, Toolbox &toolbox, bool &isAppRunning);
+    VoxelMesh &vertexMesh, bool &isAppRunning);
 
 #endif

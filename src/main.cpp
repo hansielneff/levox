@@ -7,7 +7,6 @@
 #include "event_handler.hpp"
 #include "camera.hpp"
 #include "voxel_mesh.hpp"
-#include "toolbox.hpp"
 
 int main()
 {
@@ -28,7 +27,6 @@ int main()
 
         Camera camera(glm::vec3(50.0f, 50.0f, 50.0f));
         VoxelMesh voxelMesh(16, 16, 16);
-        Toolbox toolbox;
 
         sf::Clock deltaClock;
         sf::Time deltaTime = sf::Time::Zero;
@@ -36,7 +34,7 @@ int main()
         while (isAppRunning)
         {
             ImGui::SFML::Update(window, deltaTime);
-            handleWindowEvents(window, camera, voxelMesh, toolbox, isAppRunning);
+            handleWindowEvents(window, camera, voxelMesh, isAppRunning);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             voxelMesh.render(camera);
             window.pushGLStates();

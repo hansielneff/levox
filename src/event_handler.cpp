@@ -8,12 +8,14 @@
 #include <iostream>
 
 #include "event_handler.hpp"
+#include "toolbox.hpp"
 
 void handleWindowEvents(sf::Window &window, Camera &camera,
-    VoxelMesh &voxelMesh, Toolbox &toolbox, bool &isAppRunning)
+    VoxelMesh &voxelMesh, bool &isAppRunning)
 {
     static bool middleMouseDown = false;
     static bool leftShiftDown = false;
+    static Toolbox toolbox;
 
     toolbox.renderImGui(voxelMesh);
 
