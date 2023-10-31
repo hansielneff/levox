@@ -5,8 +5,6 @@
 #endif
 #include <imgui-SFML.h>
 
-#include <iostream>
-
 #include "event_handler.hpp"
 #include "toolbox.hpp"
 
