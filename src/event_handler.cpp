@@ -4,6 +4,7 @@
     #include "glad/glx.h"
 #endif
 #include <imgui-SFML.h>
+#include <imgui.h>
 
 #include "event_handler.hpp"
 #include "toolbox.hpp"
@@ -14,12 +15,16 @@ void handleWindowEvents(sf::Window &window, Camera &camera,
     static bool middleMouseDown = false;
     static bool leftShiftDown = false;
     static Toolbox toolbox;
-
+    
     toolbox.renderImGui(voxelMesh);
+    ImGuiIO &imGuiIO = ImGui::GetIO();
 
     for (auto event = sf::Event(); window.pollEvent(event);)
     {
+
         ImGui::SFML::ProcessEvent(window, event);
+        if (imGuiIO.WantCaptureMouse || imGuiIO.WantCaptureKeyboard) continue;
+
         switch (event.type)
         {
             case sf::Event::Closed:
