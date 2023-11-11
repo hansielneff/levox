@@ -2,6 +2,9 @@
 
 A simple voxel editor made in C++ with SFML and OpenGL.
 
+<img src="images/levox_cube.png" alt="image_default_cube" width="512"/>
+<img src="images/levox_colorful.png" alt="image_default_cube" width="512"/>
+
 ## Getting started
 
 Download the latest build from the [Releases](https://github.com/hansielneff/Levox/releases) section or follow the instructions below to compile from source.
