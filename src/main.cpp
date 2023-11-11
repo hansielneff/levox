@@ -14,6 +14,7 @@ int main()
     {
         sf::RenderWindow window({1280, 720}, "Levox",
             sf::Style::Default, sf::ContextSettings(24, 0, 0, 3, 3));
+        window.setFramerateLimit(60);
         window.setActive();
 
         if (!gladLoaderLoadGL())
