@@ -2,8 +2,8 @@
 
 A simple voxel editor made in C++ with SFML and OpenGL.
 
-<img src="images/levox_cube.png" alt="image_default_cube" width="512"/>
-<img src="images/levox_colorful.png" alt="image_default_cube" width="512"/>
+![image_cube](images/levox_cube.png)
+![image_colorful](images/levox_colorful.png)
 
 ## Getting started
 
