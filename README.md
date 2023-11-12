@@ -9,6 +9,8 @@ A simple voxel editor made in C++ with SFML and OpenGL.
 
 Download the latest build from the [Releases](https://github.com/hansielneff/Levox/releases) section or follow the instructions below to compile from source.
 
+Note that Levox does not support MacOS at the moment, due to sfml-imgui requiring OpenGL compatibility mode.
+
 ## Compiling from source
 
 1. If you use Linux, install SFML's dependencies using your system package manager. On Ubuntu and other Debian-based distributions you can use the following commands:
